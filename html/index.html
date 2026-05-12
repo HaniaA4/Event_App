@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventHub – Where Moments Become Memories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/index.css" />
+</head>
+<body>
+
+  <iframe src="background.html" class="bg-frame" title="background"></iframe>
+
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">Event<em>Hub</em></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="events.html">Events</a></li>
+      <li><a href="login.html">My Area</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost">Log in</a>
+      <a href="login.html" class="btn btn-primary">Sign up</a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="page">
+
+    <section class="hero">
+      <div class="hero-badge">✦ Find your people</div>
+      <h1 class="hero-title">
+        Where moments<br />
+        <span class="line2">become memories</span>
+      </h1>
+      <p class="hero-sub">
+        Discover events, join meetups, and connect with people
+        who share your passions — all in one place.
+      </p>
+      <div class="hero-actions">
+        <a href="events.html" class="btn btn-primary btn-lg">Explore Events</a>
+        <a href="login.html"  class="btn btn-outline btn-lg">Host a Meetup</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">120+</div><div class="stat-label">Events</div></div>
+        <div class="stat"><div class="stat-num">3.4k</div><div class="stat-label">Members</div></div>
+        <div class="stat"><div class="stat-num">18</div><div class="stat-label">Categories</div></div>
+      </div>
+    </section>
+
+    <div class="section">
+      <div class="section-header reveal">
+        <div><h2 class="section-title">Browse by <em>Category</em></h2><p class="section-sub">What are you into?</p></div>
+      </div>
+      <div class="categories-grid reveal">
+        <a href="events.html" class="glass category-card"><span class="cat-icon">📚</span><div class="cat-name">Study Sessions</div><div class="cat-count">24 events</div></a>
+        <a href="events.html" class="glass category-card"><span class="cat-icon">🛠️</span><div class="cat-name">Workshops</div><div class="cat-count">18 events</div></a>
+        <a href="events.html" class="glass category-card"><span class="cat-icon">⚽</span><div class="cat-name">Sports</div><div class="cat-count">31 events</div></a>
+        <a href="events.html" class="glass category-card"><span class="cat-icon">🎭</span><div class="cat-name">Cultural</div><div class="cat-count">15 events</div></a>
+        <a href="events.html" class="glass category-card"><span class="cat-icon">🎤</span><div class="cat-name">Talks</div><div class="cat-count">9 events</div></a>
+        <a href="events.html" class="glass category-card"><span class="cat-icon">👥</span><div class="cat-name">Group Meetings</div><div class="cat-count">23 events</div></a>
+      </div>
+    </div>
+
+    <div class="section" style="padding-top:0;">
+      <div class="section-header reveal">
+        <div><h2 class="section-title">Featured <em>Events</em></h2><p class="section-sub">Happening soon — don't miss out</p></div>
+        <a href="events.html" class="btn btn-ghost">See all →</a>
+      </div>
+      <div class="events-grid" id="eventsGrid"></div>
+    </div>
+
+    <div class="cta-wrap">
+      <div class="cta-inner reveal">
+        <h2>Ready to host your own event?</h2>
+        <p>Create and publish events for your student group, class, or community.</p>
+        <a href="login.html" class="btn btn-primary btn-lg">Get started — it's free</a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer><p>© 2025 EventHub · Built with ❤️</p></footer>
+
+  <script src="../js/index.js"></script>
+</body>
+</html>

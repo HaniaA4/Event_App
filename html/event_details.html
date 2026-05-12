@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventHub – Event Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/shared.css" />
+  <link rel="stylesheet" href="../css/event-details.css" />
+</head>
+<body>
+
+  <iframe src="background.html" class="bg-frame" title="background"></iframe>
+
+  <!-- ── Navbar ── -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">Event<span>Hub</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="events.html">Events</a></li>
+      <li><a href="event_details.html" class="active">My Area</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost">Log in</a>
+      <a href="login.html" class="btn btn-primary">Sign up</a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="page">
+
+    <!-- ── Hero Banner ── -->
+    <div class="event-hero" id="eventHero">
+      <div class="event-hero-grad" id="heroGrad"></div>
+      <div class="event-hero-overlay"></div>
+      <div class="event-hero-icon" id="heroIcon"></div>
+      <div class="event-hero-content">
+        <div class="event-hero-cat" id="heroCat"></div>
+        <h1 class="event-hero-title" id="heroTitle"></h1>
+      </div>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="main-content">
+      <a href="events.html" class="back-link">← Back to all events</a>
+
+      <div class="detail-layout">
+
+        <!-- LEFT: Description, info, participants -->
+        <div class="detail-main">
+
+          <div class="section-block">
+            <h3>About this event</h3>
+            <p id="eventDesc"></p>
+          </div>
+
+          <div class="section-block">
+            <h3>Event Details</h3>
+            <div class="info-grid" id="infoGrid"></div>
+          </div>
+
+          <div class="section-block">
+            <h3>Tags</h3>
+            <div class="tags-row" id="tagsRow"></div>
+          </div>
+
+          <div class="section-block">
+            <h3>Who's going</h3>
+            <div class="participants-list" id="participantsList"></div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Sidebar card -->
+        <div class="detail-sidebar">
+          <div class="glass sidebar-card">
+            <div class="price-tag">Free <span>/ entry</span></div>
+
+            <div class="progress-wrap">
+              <div class="progress-label">
+                <span id="progressText">Loading…</span>
+                <span id="progressPct"></span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+              </div>
+            </div>
+
+            <div class="register-area">
+              <button class="btn btn-primary btn-lg" id="registerBtn" onclick="toggleRegister()">
+                Register for this event
+              </button>
+              <p class="login-note">
+                Already have an account? <a href="login.html">Log in</a> to register faster.
+              </p>
+            </div>
+
+            <div class="share-row">
+              <button class="share-btn" onclick="share('copy')">🔗 Copy link</button>
+              <button class="share-btn" onclick="share('whatsapp')">💬 WhatsApp</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2025 EventHub · Built with ❤️</p>
+  </footer>
+
+  <div id="notification">✅ Registered successfully!</div>
+
+  <script src="../js/event-details.js"></script>
+</body>
+</html>

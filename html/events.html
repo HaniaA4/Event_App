@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventHub – All Events</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/shared.css" />
+  <link rel="stylesheet" href="../css/events.css" />
+</head>
+<body>
+
+  <iframe src="background.html" class="bg-frame" title="background"></iframe>
+
+  <!-- ── Navbar ── -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">Event<span>Hub</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="events.html" class="active">Events</a></li>
+      <li><a href="event_details.html">My Area</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost">Log in</a>
+      <a href="login.html" class="btn btn-primary">Sign up</a>
+    </div>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- ── Page Header ── -->
+    <div class="page-header">
+      <h1>All <span>Events</span></h1>
+      <p>Find something that matches your vibe</p>
+    </div>
+
+    <!-- ── Search & Filters ── -->
+    <div class="filters-bar">
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search events, topics, locations…" />
+      </div>
+
+      <div class="filter-row">
+        <span class="filter-label">Category:</span>
+        <button class="filter-btn active" data-cat="all">All</button>
+        <button class="filter-btn" data-cat="Study Sessions">📚 Study</button>
+        <button class="filter-btn" data-cat="Workshops">🛠️ Workshops</button>
+        <button class="filter-btn" data-cat="Sports">⚽ Sports</button>
+        <button class="filter-btn" data-cat="Cultural">🎭 Cultural</button>
+        <button class="filter-btn" data-cat="Talks">🎤 Talks</button>
+        <button class="filter-btn" data-cat="Group Meetings">👥 Groups</button>
+      </div>
+    </div>
+
+    <!-- ── Results bar ── -->
+    <div class="results-bar">
+      <p id="resultsCount"><strong>6</strong> events found</p>
+      <div class="sort-wrap">
+        <label for="sortSelect">Sort by:</label>
+        <select id="sortSelect">
+          <option value="date">Date</option>
+          <option value="spots">Spots left</option>
+          <option value="popularity">Most popular</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── Events Grid ── -->
+    <div class="events-grid" id="eventsGrid"></div>
+
+    <!-- ── Empty State ── -->
+    <div id="emptyState">
+      <div class="glass empty-inner">
+        <span class="empty-icon">🔍</span>
+        <h3>No events found</h3>
+        <p>Try a different search term or category</p>
+      </div>
+    </div>
+
+    <!-- ── Pagination ── -->
+    <div class="pagination" id="pagination"></div>
+
+  </div>
+
+  <footer>
+    <p>© 2025 EventHub · Built with ❤️</p>
+  </footer>
+
+  <script src="../js/events.js"></script>
+</body>
+</html>
