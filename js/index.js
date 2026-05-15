@@ -1,10 +1,13 @@
 const events = [
-  { title:"Python for Data Science – Study Session", category:"Study Sessions", date:"May 15", time:"18:00", location:"Library, Room B2",   participants:12, max:20, icon:"📚", gradient:"linear-gradient(135deg,#1a237e,#283593)" },
-  { title:"5-a-side Football Tournament",            category:"Sports",         date:"May 17", time:"15:30", location:"Campus Sports Field", participants:28, max:30, icon:"⚽", gradient:"linear-gradient(135deg,#1b5e20,#2e7d32)" },
-  { title:"Web Design Workshop",                     category:"Workshops",      date:"May 20", time:"14:00", location:"Auditorium A",         participants:45, max:60, icon:"🛠️", gradient:"linear-gradient(135deg,#4a148c,#6a1b9a)" },
-  { title:"Data Viz Talk: Beyond Bar Charts",        category:"Talks",          date:"May 22", time:"17:00", location:"Room 101, Main Bldg", participants:33, max:50, icon:"🎤", gradient:"linear-gradient(135deg,#7c2d12,#b45309)" },
-  { title:"Portuguese Culture Night",                category:"Cultural",       date:"May 24", time:"20:00", location:"Student Lounge",       participants:60, max:80, icon:"🎭", gradient:"linear-gradient(135deg,#064e3b,#065f46)" },
-  { title:"Group Project Kickoff – TAW",             category:"Group Meetings", date:"May 25", time:"10:00", location:"Room 204",             participants:8,  max:10, icon:"👥", gradient:"linear-gradient(135deg,#92400e,#b45309)" },
+  { id:1, title:"Python for Data Science – Study Session", category:"Study Sessions", date:"May 15", time:"18:00", location:"Library, Room B2",   participants:12, max:20,  icon:"📚", gradient:"linear-gradient(135deg,#1a237e,#283593)" },
+  { id:2, title:"5-a-side Football Tournament",            category:"Sports",         date:"May 17", time:"15:30", location:"Campus Sports Field", participants:28, max:30,  icon:"⚽", gradient:"linear-gradient(135deg,#1b5e20,#2e7d32)" },
+  { id:3, title:"Web Design Workshop",                     category:"Workshops",      date:"May 20", time:"14:00", location:"Auditorium A",         participants:45, max:60,  icon:"🛠️", gradient:"linear-gradient(135deg,#4a148c,#6a1b9a)" },
+  { id:4, title:"Data Viz Talk: Beyond Bar Charts",        category:"Talks",          date:"May 22", time:"17:00", location:"Room 101, Main Bldg",  participants:33, max:50,  icon:"🎤", gradient:"linear-gradient(135deg,#bf360c,#d84315)" },
+  { id:5, title:"Portuguese Culture Night",                category:"Cultural",       date:"May 24", time:"20:00", location:"Student Lounge",       participants:60, max:80,  icon:"🎭", gradient:"linear-gradient(135deg,#006064,#00838f)" },
+  { id:6, title:"Group Project Kickoff – TAW",             category:"Group Meetings", date:"May 25", time:"10:00", location:"Room 204",             participants:8,  max:10,  icon:"👥", gradient:"linear-gradient(135deg,#e65100,#ef6c00)" },
+  { id:7, title:"Statistics Exam Prep Session",            category:"Study Sessions", date:"May 26", time:"16:00", location:"Library, Floor 3",     participants:20, max:25,  icon:"📊", gradient:"linear-gradient(135deg,#0d47a1,#1565c0)" },
+  { id:8, title:"Intro to Machine Learning Workshop",      category:"Workshops",      date:"May 28", time:"10:00", location:"Lab 3, Tech Building",  participants:18, max:30,  icon:"🤖", gradient:"linear-gradient(135deg,#311b92,#4527a0)" },
+  { id:9, title:"Campus 5km Run",                          category:"Sports",         date:"Jun 01", time:"08:30", location:"University Gardens",    participants:55, max:100, icon:"🏃", gradient:"linear-gradient(135deg,#004d40,#00695c)" },
 ];
 
 function renderEvents() {
@@ -14,7 +17,7 @@ function renderEvents() {
     const badgeClass = spotsLeft <= 5 ? 'spots-low' : 'spots-ok';
     const badgeText  = spotsLeft <= 5 ? `Only ${spotsLeft} left!` : `${spotsLeft} spots left`;
     const card = document.createElement('a');
-    if (ev.title === 'Web Design Workshop') card.href = 'event_details.html';
+    card.href = `event_details.html?id=${ev.id}`;
     card.className = 'glass event-card reveal';
     card.style.transitionDelay = `${i * 0.07}s`;
     card.innerHTML = `

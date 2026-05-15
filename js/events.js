@@ -64,7 +64,7 @@ function render() {
     else if (spotsLeft <= 5) { badgeClass = 'spots-low';  badgeText = `Only ${spotsLeft} left!`; }
 
     const card = document.createElement('a');
-    if (ev.id === 3) card.href = 'event_details.html';
+    card.href = `event_details.html?id=${ev.id}`;
     card.className = 'glass event-card reveal';
     card.style.transitionDelay = `${idx * 0.06}s`;
 
