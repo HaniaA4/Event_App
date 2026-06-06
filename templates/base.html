@@ -12,6 +12,9 @@
         {% if current_user %}
             <span>Logged in as {{ current_user.full_name }}</span>
             <a href="{{ url_for('profile') }}">My Account</a>
+            {% if current_user.is_admin %}
+                <a href="{{ url_for('admin') }}">Admin</a>
+            {% endif %}
             <a href="{{ url_for('logout') }}">Logout</a>
         {% else %}
             <a href="{{ url_for('login') }}">Login</a>
