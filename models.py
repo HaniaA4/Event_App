@@ -7,7 +7,8 @@ class BaseModel(Model):
         database = db
 
 class User(BaseModel):
-    username = CharField(unique=True)
+    email = CharField(unique=True)
+    full_name = CharField()
     password_hash = CharField()
     is_admin = BooleanField(default=False)
 
