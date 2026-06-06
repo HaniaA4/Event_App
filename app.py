@@ -151,8 +151,26 @@ def logout():
     return redirect(url_for("login"))
 
 
+@app.route("/profile)
+@login_required
+def profile():
+    current_user = get_current_user()
+    
+    organized_events = list(
+        Event.select().where(Event.organizer == current_user)
+    )
+    
+    my_registrations = list(
+        Registration.select().where(Registration.user == current_user)
+    )
+    
+    return render_template(
+        "profile.html",
+        organized_events=organized_events,
+        my_registrations=my_registrations,
+    )
+    
+
 if __name__ == "__main__":
     initialize_database()
     app.run(debug=True)
-
-
