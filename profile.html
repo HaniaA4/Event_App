@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}My Account{% endblock %}
+
+{% block content %}
+<h2>My Account</h2>
+
+<section class="profile-info">
+    <p><strong>Name:</strong> {{ current_user.full_name }}</p>
+    <p><strong>Email:</strong> {{ current_user.email }}</p>
+</section>
+
+<section class="profile-events">
+    <h3>Events I organize</h3>
+    {% if organized_events %}
+        <ul>
+            {% for event in organized_events %}
+                <li>{{ event.title }} — {{ event.date }} @ {{ event.location }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't organized any events yet.</p>
+    {% endif %}
+</section>
+
+<section class="profile-registrations">
+    <h3>My registrations</h3>
+    {% if my_registrations %}
+        <ul>
+            {% for registration in my_registrations %}
+                <li>{{ registration.event.title }} — {{ registration.event.date }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You are not registered for any events yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
