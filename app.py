@@ -169,8 +169,28 @@ def profile():
         organized_events=organized_events,
         my_registrations=my_registrations,
     )
-    
+
+@app.route("/make-admin/<email>")
+def make_admin(email): # temporary bootstrap route
+    if User.get_or_none(User.is_admin == True) is not None:
+        abort(403)
+        
+    user = User.get_or_none(User.email == email)
+    if user is None:
+        return "User not found"
+
+    user.is_admin = True
+    user.save()
+    flash(f"{user.email} is now an admin.", "success")
+    return redirect(url_for("home"))
+
+@app.route("/admin")
+@admin_required
+def admin():
+    return render_template("admin.html")
+
 
 if __name__ == "__main__":
     initialize_database()
     app.run(debug=True)
+    
