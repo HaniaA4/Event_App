@@ -9,6 +9,8 @@ from flask import (
     abort
 )
 
+from functools import wraps
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from models import db, initialize_database, User, Category, Event, Registration
@@ -31,44 +33,122 @@ def after_request(response):
     return response
 
 
+def get_current_user():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return None
+    return User.get_or_none(User.id == user_id)
+
+
+def login_required(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        if get_current_user() is None:
+            flash("You must log in first.", "warning")
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return wrapped
+
+
+def admin_required(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        current_user = get_current_user()
+        if current_user is None:
+            flash("You must log in first.", "warning")
+            return redirect(url_for("login"))
+        if not current_user.is_admin:
+            abort(403)
+        return f(*args, **kwargs)
+    return wrapped
+
+
+@app.context_processor
+def inject_current_user():
+    return {"current_user": get_current_user()}
+
+
 @app.route("/") 
 def home():
-    return render_template("index.html") # Example
-    
+    return render_template("index.html")
+
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    # If already logged in, no need to see the login page 
+    if get_current_user():
+        return redirect(url_for("home"))
+        
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+        user = User.get_or_none(User.email == email)
+
+        if user and check_password_hash(user.password_hash, password):
+            session["user_id"] = user.id
+            flash("Login successful.", "success")
+            return redirect(url_for("home"))
+            
+        flash("Invalid email or password.", "error")
+        return redirect(url_for("login"))
+
+    return render_template("login.html")
+
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if get_current_user():
+        return redirect(url_for("home"))
+    
     if request.method == "POST":
-        username = request.form.get("username", "").strip()
+        full_name = request.form.get("full_name", "").strip()
+        email = request.form.get("email", "").strip()
         password = request.form.get("password", "")
+        confirm = request.form.get("confirm_password", "")
 
         errors = []
         
-        if not username:
-            errors.append("Username is required.")
+        if not full_name:
+            errors.append("Full name is required.")
             
-        if len(username) > 30:
-            errors.append("Username is too long.")
+        if len(full_name) > 100:
+            errors.append("Full name is too long.")
+            
+        if not email:
+            errors.append("Email is required.")
+        elif "@" not in email:
+            errors.append("Please enter a valid email address.")
             
         if len(password) < 8:
             errors.append("Password must have at least 8 characters.")
-            
-        if User.get_or_none(User.username == username):
-            errors.append("Username already exists.")
+
+        if password != confirm:
+            errors.append("Passwords do not match.")
+
+        if email and User.get_or_none(User.email == email):
+            errors.append("An account with this email already exists.")     
 
         if errors:
             for error in errors:
                 flash(error, "error")
-            return redirect(url_for("register"))
+            return redirect(url_for("login"))
 
         password_hash = generate_password_hash(password)
 
-        User.create(username=username, password_hash=password_hash)
+        User.create(full_name=full_name, email=email, password_hash=password_hash)
 
         flash("Account created successfully. You can now log in.", "success")
         return redirect(url_for("login"))
 
-    return render_template("register.html")
+    return redirect(url_for(("login"))
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("You have been logged out.", "success")
+    return redirect(url_for("login"))
 
 
 if __name__ == "__main__":
