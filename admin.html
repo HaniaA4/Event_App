@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Backoffice{% endblock %}
+
+{% block content %}
+<h2>Admin Backoffice</h2>
+<p>Logged in as admin: {{ current_user.full_name }} ({{ current_user.email }})</p>
+
+<section class="admin-tools">
+    <h3>Management</h3>
+    <p>Event and category management will live here.</p>
+</section>
+{% endblock %}
