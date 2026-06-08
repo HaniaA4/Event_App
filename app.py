@@ -170,7 +170,8 @@ def profile():
         my_registrations=my_registrations,
     )
 
-@app.route("/make-admin/<email>")
+
+@app.route("/make-admin/<email>") 
 def make_admin(email): # temporary bootstrap route
     if User.get_or_none(User.is_admin == True) is not None:
         abort(403)
@@ -183,6 +184,7 @@ def make_admin(email): # temporary bootstrap route
     user.save()
     flash(f"{user.email} is now an admin.", "success")
     return redirect(url_for("home"))
+    
 
 @app.route("/admin")
 @admin_required
