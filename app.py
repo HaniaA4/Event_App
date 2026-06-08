@@ -190,6 +190,15 @@ def admin():
     return render_template("admin.html")
 
 
+@app.errorhandler(403)
+def forbidden(error):
+    return render_template("403.html"), 403
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template("404.html"), 404
+
+
 if __name__ == "__main__":
     initialize_database()
     app.run(debug=True)
