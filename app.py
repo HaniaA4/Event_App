@@ -142,7 +142,7 @@ def register():
         flash("Account created successfully. You can now log in.", "success")
         return redirect(url_for("login"))
 
-    return redirect(url_for(("login"))
+    return redirect(url_for("login"))
 
 @app.route("/logout")
 def logout():
@@ -151,7 +151,7 @@ def logout():
     return redirect(url_for("login"))
 
 
-@app.route("/profile)
+@app.route("/profile")
 @login_required
 def profile():
     current_user = get_current_user()
