@@ -316,4 +316,3 @@ def internal_server_error(error):
 if __name__ == "__main__":
     initialize_database()
     app.run(debug=True)
-    
