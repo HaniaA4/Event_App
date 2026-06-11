@@ -11,13 +11,15 @@ from flask import (
 
 from functools import wraps
 
+import os
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from models import db, initialize_database, User, Category, Event, Registration
 
 
 app = Flask(__name__)
-app.secret_key = "dev-secret-key"
+app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
 
 
 @app.before_request
@@ -73,7 +75,6 @@ def home():
     return render_template("index.html")
 
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     # If already logged in, no need to see the login page 
@@ -94,7 +95,6 @@ def login():
         return redirect(url_for("login"))
 
     return render_template("login.html")
-
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -143,6 +143,7 @@ def register():
         return redirect(url_for("login"))
 
     return redirect(url_for("login"))
+
 
 @app.route("/logout")
 def logout():
@@ -199,6 +200,10 @@ def forbidden(error):
 @app.errorhandler(404)
 def not_found(error):
     return render_template("404.html"), 404
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    return render_template("500.html"), 500
 
 
 if __name__ == "__main__":
