@@ -10,12 +10,9 @@ from flask import (
 )
 
 from functools import wraps
-
 import os
-
 from werkzeug.security import generate_password_hash, check_password_hash
-
-from models import db, initialize_database, User, Category, Event, Registration
+from models import db, initialize_database, User, Category, Event, Registration, Comment
 
 
 app = Flask(__name__)
@@ -170,6 +167,116 @@ def profile():
         organized_events=organized_events,
         my_registrations=my_registrations,
     )
+
+
+@app.route("/events")
+def events():
+    all_events = Event.select()
+    return render_template("events.html", events=all_events)
+
+
+@app.route("/event/<int:event_id>")
+def event_detail(event_id):
+    event = Event.get_or_none(Event.id == event_id)
+    if event is None:
+        abort(404)
+    registrations_count = event.registrations.count()
+    
+    spots_left = None
+    if event.max_participants is not None:
+        spots_left = event.max_participants - registrations_count
+        
+    is_registered = False
+    current_user = get_current_user()
+    if current_user:
+        existing = Registration.get_or_none(
+            (Registration.user == current_user) &
+            (Registration.event == event)
+        )
+        is_registered = existing is not None
+        
+    comments = list(event.comments)
+
+    return render_template(
+        "event_details.html",
+        event=event,
+        registrations_count=registrations_count,
+        spots_left=spots_left,
+        is_registered=is_registered,
+        comments=comments,
+    )
+
+
+@app.route("/event/<int:event_id>/register", methods=["POST"])
+@login_required
+def register_in_event(event_id):
+    current_user = get_current_user()
+
+    event = Event.get_or_none(Event.id == event_id)
+    if event is None:
+        abort(404)
+        
+    if event.status != "open":
+        flash("This event is closed for registrations.", "error")
+        return redirect(url_for("event_detail", event_id=event.id))
+    
+    existing = Registration.get_or_none(
+        (Registration.user == current_user) &
+        (Registration.event == event)
+    )
+    if existing is not None:
+        flash("You are already registered in this event.", "warning")
+        return redirect(url_for("event_detail", event_id=event.id))
+
+    if event.max_participants is not None:
+        if event.registrations.count() >= event.max_participants:
+            flash("This event is full.", "error")
+            return redirect(url_for("event_detail", event_id=event.id))
+            
+    Registration.create(user=current_user, event=event)
+    flash("You are now registered in this event.", "success")
+    return redirect(url_for("event_detail", event_id=event.id))
+
+
+@app.route("/event/<int:event_id>/cancel", methods=["POST"])
+@login_required
+def cancel_registration(event_id):
+    current_user = get_current_user()
+
+    event = Event.get_or_none(Event.id == event_id)
+    if event is None:
+        abort(404)
+        
+    registration = Registration.get_or_none(
+        (Registration.user == current_user) &
+        (Registration.event == event)
+    )
+    if registration is None:
+        flash("You are not registered in this event.", "warning")
+        return redirect(url_for("event_detail", event_id=event.id))
+
+    registration.delete_instance()
+    flash("Your registration was cancelled.", "success")
+    return redirect(url_for("event_detail", event_id=event.id))
+
+
+@app.route("/event/<int:event_id>/comments/add", methods=["POST"])
+@login_required
+def add_comment(event_id):
+    current_user = get_current_user()
+    
+    event = Event.get_or_none(Event.id == event_id)
+    if event is None:
+        abort(404)
+        
+    text = request.form.get("text", "").strip()
+    if not text:
+        flash("Comment cannot be empty.", "error")
+        return redirect(url_for("event_detail", event_id=event.id))
+
+    Comment.create(text=text, event=event, author=current_user)
+    flash("Comment added.", "success")
+    return redirect(url_for("event_detail", event_id=event.id)) 
 
 
 @app.route("/make-admin/<email>") 
