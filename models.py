@@ -44,4 +44,3 @@ def initialize_database():
     db.connect()
     db.create_tables([User, Category, Event, Registration, Comment])
     db.close()
-  
