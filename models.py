@@ -24,7 +24,7 @@ class Event(BaseModel):
     location = CharField()
     status = CharField(default="open")
     max_participants = IntegerField(null=True)
-    map_link = Charfield(null=True)
+    map_link = CharField(null=True)
     category = ForeignKeyField(Category, backref="events")
     organizer = ForeignKeyField(User, backref="events")
     # Number of participants is not stored here, it will be counted from registrations: event.registrations.count().
