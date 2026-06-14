@@ -11,18 +11,18 @@
 </head>
 <body>
 
-  <iframe src="background.html" class="bg-frame" title="background"></iframe>
+<iframe src="{{ url_for('static', filename='background.html') }}" class="bg-frame" title="background"></iframe>
 
   <nav class="navbar">
-    <a href="index.html" class="nav-logo">Event<em>Hub</em></a>
+    <a href="{{ url_for('home') }}" class="nav-logo">Event<em>Hub</em></a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="events.html">Events</a></li>
-      <li><a href="login.html">My Area</a></li>
+      <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
+      <li><a href="{{ url_for('events') }}">Events</a></li>
+      <li><a href="{{ url_for('profile') }}">My Area</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="login.html" class="btn btn-ghost">Log in</a>
-      <a href="login.html" class="btn btn-primary">Sign up</a>
+      <a href="{{ url_for('login') }}" class="btn btn-ghost">Log in</a>
+      <a href="{{ url_for('register') }}" class="btn btn-primary">Sign up</a>
     </div>
     <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   </nav>
@@ -40,8 +40,8 @@
         who share your passions — all in one place.
       </p>
       <div class="hero-actions">
-        <a href="events.html" class="btn btn-primary btn-lg">Explore Events</a>
-        <a href="login.html"  class="btn btn-outline btn-lg">Host a Meetup</a>
+        <a href="{{ url_for('events') }}" class="btn btn-primary btn-lg">Explore Events</a>
+        <a href="{{ url_for('login') }}" class="btn btn-outline btn-lg">Host a Meetup</a>
       </div>
       <div class="hero-stats">
         <div class="stat"><div class="stat-num">120+</div><div class="stat-label">Events</div></div>
@@ -55,19 +55,19 @@
         <div><h2 class="section-title">Browse by <em>Category</em></h2><p class="section-sub">What are you into?</p></div>
       </div>
       <div class="categories-grid reveal">
-        <a href="events.html" class="glass category-card"><span class="cat-icon">📚</span><div class="cat-name">Study Sessions</div><div class="cat-count">24 events</div></a>
-        <a href="events.html" class="glass category-card"><span class="cat-icon">🛠️</span><div class="cat-name">Workshops</div><div class="cat-count">18 events</div></a>
-        <a href="events.html" class="glass category-card"><span class="cat-icon">⚽</span><div class="cat-name">Sports</div><div class="cat-count">31 events</div></a>
-        <a href="events.html" class="glass category-card"><span class="cat-icon">🎭</span><div class="cat-name">Cultural</div><div class="cat-count">15 events</div></a>
-        <a href="events.html" class="glass category-card"><span class="cat-icon">🎤</span><div class="cat-name">Talks</div><div class="cat-count">9 events</div></a>
-        <a href="events.html" class="glass category-card"><span class="cat-icon">👥</span><div class="cat-name">Group Meetings</div><div class="cat-count">23 events</div></a>
+        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">📚</span><div class="cat-name">Study Sessions</div><div class="cat-count">24 events</div></a>
+        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">🛠️</span><div class="cat-name">Workshops</div><div class="cat-count">18 events</div></a>
+        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">⚽</span><div class="cat-name">Sports</div><div class="cat-count">31 events</div></a>
+        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">🎭</span><div class="cat-name">Cultural</div><div class="cat-count">15 events</div></a>
+        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">🎤</span><div class="cat-name">Talks</div><div class="cat-count">9 events</div></a>
+        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">👥</span><div class="cat-name">Group Meetings</div><div class="cat-count">23 events</div></a>
       </div>
     </div>
 
     <div class="section" style="padding-top:0;">
       <div class="section-header reveal">
         <div><h2 class="section-title">Featured <em>Events</em></h2><p class="section-sub">Happening soon — don't miss out</p></div>
-        <a href="events.html" class="btn btn-ghost">See all →</a>
+        <a href="{{ url_for('events') }}" class="btn btn-ghost">See all →</a>
       </div>
       <div class="events-grid" id="eventsGrid"></div>
     </div>
@@ -76,7 +76,7 @@
       <div class="cta-inner reveal">
         <h2>Ready to host your own event?</h2>
         <p>Create and publish events for your student group, class, or community.</p>
-        <a href="login.html" class="btn btn-primary btn-lg">Get started — it's free</a>
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Get started — it's free</a>
       </div>
     </div>
 
@@ -115,6 +115,6 @@
 
   <footer><p>© 2026 EventHub · Built with ❤️</p></footer>
 
-  <script src="/static/index.js"></script>
+  <script src="{{ url_for('static', filename='index.js') }}"></script>
 </body>
 </html>
