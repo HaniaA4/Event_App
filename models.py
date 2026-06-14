@@ -41,6 +41,6 @@ class Comment(BaseModel):
 
 
 def initialize_database():
-    db.connect()
-    db.create_tables([User, Category, Event, Registration, Comment])
+    db.connect(reuse_if_open=True)
+    db.create_tables([User, Category, Event, Registration, Comment], safe=True)
     db.close()

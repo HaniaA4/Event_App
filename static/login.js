@@ -15,13 +15,14 @@ function togglePassword(inputId, btn) {
     btn.textContent = '👁️';
   }
 }
-
-document.getElementById('regPassword').addEventListener('input', function () {
-  const pw = this.value;
-  let score = 0;
-  if (pw.length >= 8)          score++;
-  if (/[A-Z]/.test(pw))        score++;
-  if (/[0-9]/.test(pw))        score++;
+const regPassword = document.getElementById('regPassword');
+if (regPassword) {
+  regPassword.addEventListener('input', function () {
+    const pw = this.value;
+    let score = 0;
+    if (pw.length >= 8)          score++;
+    if (/[A-Z]/.test(pw))        score++;
+    if (/[0-9]/.test(pw))        score++;
   if (/[^A-Za-z0-9]/.test(pw)) score++;
 
   const colors = ['', '#ef4444', '#5c7cfa', '#eab308', '#34d399'];
@@ -35,6 +36,7 @@ document.getElementById('regPassword').addEventListener('input', function () {
   label.textContent = pw.length > 0 ? labels[score] : '';
   label.style.color = colors[score] || 'var(--text-muted)';
 });
+}
 
 function showMsg(id, text, type) {
   const el = document.getElementById(id);
@@ -49,16 +51,16 @@ function handleLogin() {
 
   if (!email || !password) {
     showMsg('loginMsg', '⚠️ Please fill in all fields.', 'error');
-    return;
+    return false;
   }
 
   if (!email.includes('@')) {
     showMsg('loginMsg', '⚠️ Please enter a valid email address.', 'error');
-    return;
+    return false;
   }
 
   showMsg('loginMsg', '✅ Logging you in…', 'success');
-  setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+  return true; // Allow form submission 
 }
 
 function handleRegister() {
@@ -69,32 +71,28 @@ function handleRegister() {
 
   if (!name || !email || !password || !confirm) {
     showMsg('registerMsg', '⚠️ Please fill in all fields.', 'error');
-    return;
+    return false;
   }
 
   if (!email.includes('@')) {
     showMsg('registerMsg', '⚠️ Please enter a valid email address.', 'error');
-    return;
+    return false;
   }
 
   if (password.length < 8) {
     showMsg('registerMsg', '⚠️ Password must be at least 8 characters.', 'error');
-    return;
+    return false;
   }
 
   if (password !== confirm) {
     showMsg('registerMsg', '⚠️ Passwords do not match.', 'error');
-    return;
+    return false;
   }
 
-  showMsg('registerMsg', `✅ Account created! Welcome, ${name}!`, 'success');
-  setTimeout(() => { window.location.href = 'index.html'; }, 1400);
+  showMsg('registerMsg', `✅ Creating account for ${name}...`, 'success');
+  return true; // Allow form submission
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const loginActive = document.getElementById('panelLogin').classList.contains('active');
-    if (loginActive) handleLogin();
-    else handleRegister();
-  }
-});
+if (window.location.hash === '#register') {
+  switchTab('register');
+}

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='event-details.css') }}" />
 </head>
+
 <body>
 
   <iframe src="{{ url_for('static', filename='background.html') }}" class="bg-frame" title="background"></iframe>
@@ -125,6 +126,20 @@
   </footer>
 
   <div id="notification">✅ Registered successfully!</div>
+
+
+<script>
+  const eventData = {
+    date: "{{ event.date }}",
+    location: "{{ event.location }}",
+    status: "{{ event.status }}",
+    category: "{{ event.category.name }}",
+    organizer: "{{ event.organizer.full_name }}",
+    registrationsCount: Number("{{ registrations_count }}"),
+    maxParticipants: Number("{{ event.max_participants }}")
+  };
+</script>
+
 
   <script src="{{ url_for('static', filename='event-details.js') }}"></script>
 </body>
