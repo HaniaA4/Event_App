@@ -43,4 +43,17 @@ class Comment(BaseModel):
 def initialize_database():
     db.connect(reuse_if_open=True)
     db.create_tables([User, Category, Event, Registration, Comment], safe=True)
+
+    default_categories = [
+        "Study Sessions",
+        "Workshops",
+        "Sports",
+        "Cultural",
+        "Talks",
+        "Group Meetings"
+    ]
+
+    for name in default_categories:
+        Category.get_or_create(name=name)
+
     db.close()

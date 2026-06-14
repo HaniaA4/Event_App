@@ -216,6 +216,17 @@
 .page-btn:hover { border-color: var(--accent); color: var(--accent); }
 .page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
+.add-event-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  float: right;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
 @media (max-width: 768px) {
   .events-grid { grid-template-columns: 1fr; }
 }

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Create Event{% endblock %}
+
+{% block content %}
+<h2>Create Event</h2>
+
+<form method="POST" action="{{ url_for('create_event') }}">
+  <label>Title</label>
+  <input type="text" name="title" required>
+
+  <label>Description</label>
+  <textarea name="description"></textarea>
+
+  <label>Date and Time</label>
+  <input type="datetime-local" name="date" required>
+
+  <label>Location</label>
+  <input type="text" name="location" required>
+
+  <label>Max Participants</label>
+  <input type="number" name="max_participants" min="1">
+
+  <label>Category</label>
+  <select name="category_id" required>
+    {% for category in categories %}
+      <option value="{{ category.id }}">{{ category.name }}</option>
+    {% endfor %}
+  </select>
+
+  <button type="submit">Create Event</button>
+</form>
+{% endblock %}

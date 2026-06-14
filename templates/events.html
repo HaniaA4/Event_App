@@ -20,11 +20,18 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="{{ url_for('home') }}">Home</a></li>
       <li><a href="{{ url_for('events') }}" class="active">Events</a></li>
+      {% if current_user %}
       <li><a href="{{ url_for('profile') }}">My Area</a></li>
+      {% endif %}   
     </ul>
     <div class="nav-cta">
-      <a href="{{ url_for('login') }}" class="btn btn-ghost">Log in</a>
-      <a href="{{ url_for('register') }}" class="btn btn-primary">Sign up</a>
+      {% if current_user %}
+        <a href="{{ url_for('profile') }}" class="btn btn-ghost">My Area</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-primary">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-ghost">Log in</a>
+        <a href="{{ url_for('login') }}#register" class="btn btn-primary">Sign up</a>
+      {% endif %}
     </div>
     <div class="hamburger" id="hamburger">
       <span></span><span></span><span></span>
@@ -62,7 +69,7 @@
 
     <!-- ── Results bar ── -->
     <div class="results-bar">
-      <p id="resultsCount"><strong>6</strong> events found</p>
+      <p id="resultsCount"><strong>{{ events|length }}</strong> events found</p>
       <div class="sort-wrap">
         <label for="sortSelect">Sort by:</label>
         <select id="sortSelect">
@@ -74,20 +81,71 @@
     </div>
 
     <!-- ── Events Grid ── -->
-    <div class="events-grid" id="eventsGrid"></div>
+<div class="events-grid" id="eventsGrid">
+  {% for event in events %}
+    {% set registered = event.registrations.count() %}
+    {% set spots_left = event.max_participants - registered if event.max_participants else 9999 %}
+
+    <a href="{{ url_for('event_detail', event_id=event.id) }}"
+       class="glass event-card reveal"
+       data-title="{{ event.title }}"
+       data-category="{{ event.category.name }}"
+       data-location="{{ event.location }}"
+       data-registrations="{{ registered }}"
+       data-spots-left="{{ spots_left }}">
+
+      <div class="event-body">
+        <div class="event-category">{{ event.category.name }}</div>
+        <h3 class="event-title">{{ event.title }}</h3>
+
+        <div class="event-meta">
+          <div class="event-meta-row">📅 {{ event.date }}</div>
+          <div class="event-meta-row">📍 {{ event.location }}</div>
+        </div>
+
+        <div class="event-footer">
+          <div class="event-participants">
+            <strong>{{ registered }}</strong>
+            {% if event.max_participants %}
+              /{{ event.max_participants }} going
+            {% else %}
+              going
+            {% endif %}
+          </div>
+
+          {% if event.max_participants %}
+            {% if spots_left <= 0 %}
+              <span class="spots-badge spots-full">Full</span>
+            {% elif spots_left <= 5 %}
+              <span class="spots-badge spots-low">Only {{ spots_left }} left!</span>
+            {% else %}
+              <span class="spots-badge spots-ok">{{ spots_left }} spots left</span>
+            {% endif %}
+          {% else %}
+            <span class="spots-badge spots-ok">Open</span>
+          {% endif %}
+        </div>
+      </div>
+    </a>
+  {% endfor %}
+</div>
 
     <!-- ── Empty State ── -->
-    <div id="emptyState">
+    <div id="emptyState" style="display: none;">
       <div class="glass empty-inner">
         <span class="empty-icon">🔍</span>
         <h3>No events found</h3>
         <p>Try a different search term or category</p>
       </div>
     </div>
-
+    {% if current_user %}
+      <a href="{{ url_for('create_event') }}" class="btn btn-primary add-event-btn">
+        + Add Event
+      </a>
+    {% endif %} 
     <!-- ── Pagination ── -->
     <div class="pagination" id="pagination"></div>
-
+ 
   </div>
 
   <footer>

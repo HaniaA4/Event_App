@@ -174,6 +174,41 @@ def events():
     all_events = Event.select()
     return render_template("events.html", events=all_events)
 
+@app.route("/events/create", methods=["GET", "POST"])
+@login_required
+def create_event():
+    categories = Category.select()
+
+    if request.method == "POST":
+        current_user = get_current_user()
+
+        title = request.form.get("title", "").strip()
+        description = request.form.get("description", "").strip()
+        date = request.form.get("date", "")
+        location = request.form.get("location", "").strip()
+        max_participants = request.form.get("max_participants", "")
+        category_id = request.form.get("category_id")
+
+        if not title or not date or not location or not category_id:
+            flash("Please fill in all required fields.", "error")
+            return redirect(url_for("create_event"))
+
+        category = Category.get_or_none(Category.id == category_id)
+
+        Event.create(
+            title=title,
+            description=description,
+            date=date,
+            location=location,
+            max_participants=int(max_participants) if max_participants else None,
+            category=category,
+            organizer=current_user
+        )
+
+        flash("Event created successfully.", "success")
+        return redirect(url_for("events"))
+
+    return render_template("create_event.html", categories=categories)
 
 @app.route("/event/<int:event_id>")
 def event_detail(event_id):

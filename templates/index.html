@@ -18,12 +18,19 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
       <li><a href="{{ url_for('events') }}">Events</a></li>
+      {% if current_user %}
       <li><a href="{{ url_for('profile') }}">My Area</a></li>
+      {% endif %}   
     </ul>
-    <div class="nav-cta">
+  <div class="nav-cta">
+    {% if current_user %}
+      <a href="{{ url_for('profile') }}" class="btn btn-ghost">My Area</a>
+      <a href="{{ url_for('logout') }}" class="btn btn-primary">Logout</a>
+    {% else %}
       <a href="{{ url_for('login') }}" class="btn btn-ghost">Log in</a>
-      <a href="{{ url_for('register') }}" class="btn btn-primary">Sign up</a>
-    </div>
+      <a href="{{ url_for('login') }}#register" class="btn btn-primary">Sign up</a>
+    {% endif %}
+  </div>
     <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   </nav>
 
@@ -41,7 +48,7 @@
       </p>
       <div class="hero-actions">
         <a href="{{ url_for('events') }}" class="btn btn-primary btn-lg">Explore Events</a>
-        <a href="{{ url_for('login') }}" class="btn btn-outline btn-lg">Host a Meetup</a>
+        <a href="{{ url_for('profile') if current_user else url_for('login') }}" class="btn btn-outline btn-lg">Host a Meetup</a>
       </div>
       <div class="hero-stats">
         <div class="stat"><div class="stat-num">120+</div><div class="stat-label">Events</div></div>
@@ -76,7 +83,7 @@
       <div class="cta-inner reveal">
         <h2>Ready to host your own event?</h2>
         <p>Create and publish events for your student group, class, or community.</p>
-        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Get started — it's free</a>
+        <a href="{{ url_for('profile') if current_user else url_for('login') }}" class="btn btn-primary btn-lg">Get started — it's free</a>
       </div>
     </div>
 
