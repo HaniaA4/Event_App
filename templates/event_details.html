@@ -7,24 +7,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/shared.css" />
-  <link rel="stylesheet" href="/static/event-details.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='event-details.css') }}" />
 </head>
 <body>
 
-  <iframe src="background.html" class="bg-frame" title="background"></iframe>
+  <iframe src="{{ url_for('static', filename='background.html') }}" class="bg-frame" title="background"></iframe>
 
   <!-- ── Navbar ── -->
   <nav class="navbar">
-    <a href="index.html" class="nav-logo">Event<span>Hub</span></a>
+    <a href="{{ url_for('home') }}" class="nav-logo">Event<span>Hub</span></a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="events.html">Events</a></li>
-      <li><a href="event_details.html" class="active">My Area</a></li>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('events') }}">Events</a></li>
+      <li><a href="{{ url_for('profile') }}" class="active">My Area</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="login.html" class="btn btn-ghost">Log in</a>
-      <a href="login.html" class="btn btn-primary">Sign up</a>
+      <a href="{{ url_for('login') }}" class="btn btn-ghost">Log in</a>
+      <a href="{{ url_for('login') }}#register" class="btn btn-primary">Sign up</a>
     </div>
     <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   </nav>
@@ -37,14 +37,16 @@
       <div class="event-hero-overlay"></div>
       <div class="event-hero-icon" id="heroIcon"></div>
       <div class="event-hero-content">
-        <div class="event-hero-cat" id="heroCat"></div>
-        <h1 class="event-hero-title" id="heroTitle"></h1>
+        <div class="event-hero-cat" id="heroCat">
+          {{ event.category.name }}
+        </div>
+        <h1 class="event-hero-title" id="heroTitle">{{ event.title }}</h1>
       </div>
     </div>
 
     <!-- ── Main Content ── -->
     <div class="main-content">
-      <a href="events.html" class="back-link">← Back to all events</a>
+      <a href="{{ url_for('events') }}" class="back-link">← Back to all events</a>
 
       <div class="detail-layout">
 
@@ -53,12 +55,17 @@
 
           <div class="section-block">
             <h3>About this event</h3>
-            <p id="eventDesc"></p>
+            <p id="eventDesc">{{ event.description }}</p>
           </div>
 
           <div class="section-block">
             <h3>Event Details</h3>
-            <div class="info-grid" id="infoGrid"></div>
+            <div class="info-grid" id="infoGrid">
+              <p><strong>Date:</strong> {{ event.date }}</p>
+              <p><strong>Location:</strong> {{ event.location }}</p>
+              <p><strong>Status:</strong> {{ event.status }}</p>
+              <p><strong>Category:</strong> {{ event.category.name }}</p>
+            </div>
           </div>
 
           <div class="section-block">
@@ -68,7 +75,9 @@
 
           <div class="section-block">
             <h3>Who's going</h3>
-            <div class="participants-list" id="participantsList"></div>
+            <div class="participants-list" id="participantsList">
+              <p>{{ registrations_count }} people registered</p>
+            </div>
           </div>
 
         </div>
@@ -89,11 +98,13 @@
             </div>
 
             <div class="register-area">
-              <button class="btn btn-primary btn-lg" id="registerBtn" onclick="toggleRegister()">
-                Register for this event
-              </button>
+              <form method="POST" action="{{ url_for('register_in_event', event_id=event.id) }}">
+                <button type="submit" class="btn btn-primary btn-lg" id="registerBtn">
+                  Register for this event
+                </button>
+              </form>
               <p class="login-note">
-                Already have an account? <a href="login.html">Log in</a> to register faster.
+                Already have an account? <a href="{{ url_for('login') }}">Log in</a> to register faster.
               </p>
             </div>
 
@@ -115,6 +126,6 @@
 
   <div id="notification">✅ Registered successfully!</div>
 
-  <script src="/static/event-details.js"></script>
+  <script src="{{ url_for('static', filename='event-details.js') }}"></script>
 </body>
 </html>

@@ -7,24 +7,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/shared.css" />
-  <link rel="stylesheet" href="/static/events.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='events.css') }}" />
 </head>
 <body>
 
-  <iframe src="background.html" class="bg-frame" title="background"></iframe>
+  <iframe src="{{ url_for('static', filename='background.html') }}" class="bg-frame" title="background"></iframe>
 
   <!-- ── Navbar ── -->
   <nav class="navbar">
-    <a href="index.html" class="nav-logo">Event<span>Hub</span></a>
+    <a href="{{ url_for('home') }}" class="nav-logo">Event<span>Hub</span></a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="events.html" class="active">Events</a></li>
-      <li><a href="event_details.html">My Area</a></li>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('events') }}" class="active">Events</a></li>
+      <li><a href="{{ url_for('profile') }}">My Area</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="login.html" class="btn btn-ghost">Log in</a>
-      <a href="login.html" class="btn btn-primary">Sign up</a>
+      <a href="{{ url_for('login') }}" class="btn btn-ghost">Log in</a>
+      <a href="{{ url_for('register') }}" class="btn btn-primary">Sign up</a>
     </div>
     <div class="hamburger" id="hamburger">
       <span></span><span></span><span></span>
@@ -94,6 +94,6 @@
     <p>© 2025 EventHub · Built with ❤️</p>
   </footer>
 
-  <script src="/static/events.js"></script>
+  <script src="{{ url_for('static', filename='events.js') }}"></script>
 </body>
 </html>
