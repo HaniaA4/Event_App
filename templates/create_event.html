@@ -10,7 +10,8 @@
 
 <div class="form-panel active">
   <div class="form-header">
-  <h2>Create Event</h2>
+  <h2>Create Event 📅</h2>
+  <p>Host your own event and connect with others!</p>
   </div>    
 
 <form method="POST" action="{{ url_for('create_event') }}">
@@ -18,32 +19,67 @@
   <div class="form-group">
   <label>Title</label>
   <div class="input-wrap">
+  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M432-192v-480H240v-96h480v96H528v480h-96Z"/></svg>
   <input type="text" name="title" required>
   </div>
   </div>
 
   <div class="form-group">
   <label>Description</label>
+  <div class="input-wrap">
+  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M336-240h288v-72H336v72Zm0-144h288v-72H336v72ZM263.72-96Q234-96 213-117.15T192-168v-624q0-29.7 21.15-50.85Q234.3-864 264-864h312l192 192v504q0 29.7-21.16 50.85Q725.68-96 695.96-96H263.72ZM528-624v-168H264v624h432v-456H528ZM264-792v189-189 624-624Z"/></svg>
   <textarea name="description"></textarea>
+    <script>
+    document.querySelectorAll("textarea").forEach(textarea => {
+    textarea.addEventListener("input", () => {
+      textarea.style.height = "auto";
+      textarea.style.height = textarea.scrollHeight + "px";
+    });
+  });
+  </script>
+  </div>
   </div>
 
+  <div class="form-group">
   <label>Date and Time</label>
+  <div class="input-wrap">
+  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M216-600h528v-96H216v96Zm0 0v-96 96Zm0 504q-29.7 0-50.85-21.15Q144-138.3 144-168v-528q0-29 21.5-50.5T216-768h72v-96h72v96h240v-96h72v96h72q29 0 50.5 21.5T816-696v210q-17-7-35.03-11-18.04-4-36.97-6v-25H216v360h250q5 20 13.5 37.5T499-96H216Zm368-8.23q-56-56.22-56-136Q528-320 584.23-376q56.22-56 136-56Q800-432 856-375.77q56 56.22 56 136Q912-160 855.77-104q-56.22 56-136 56Q640-48 584-104.23ZM775-151l34-34-65-65v-8-sixteen v9 sixty h seventy-two q twenty-nine zero fifty point-five T eight-one-six minus six ninety-six v two-one-zero q minus seventeen minus seven minus thirty-five point zero-three minus eleven minus eighteen point zero-four minus four minus thirty-six point ninety-seven minus six v minus twenty-five H two-one-six v three-six-zero h two-five-zero q five twenty thirteen point five thirty-seven point five T four ninety-nine minus ninety-six H two-one-six Z m three-six-eight minus eight point two-three q minus fifty-six minus fifty-six point two-two minus fifty-six minus one hundred thirty-six Q five-two-eight minus three hundred twenty zero five-eight-four point two-three minus three hundred seventy-six q fifty-six point two-two minus fifty-six one hundred thirty-six minus fifty-six Q eight-zero-zero minus four hundred thirty-two eight-five-six minus three hundred seventy-five point seven-seven q fifty-six fifty-six point two-two fifty-six one hundred thirty-six Q nine-one-two minus one hundred sixty eight-five-five point seven-seven minus one-zero-four qminus fifty-six point two-two fifty-sixminus one-three-six Q six-four-zerominus four-eight five-eight-fourminus one-zero-four point two-three Z M seven-seven-fiveminus one hundred fifty-one l thirty-fourminus thirty-four m sixty-fiveminus sixty-five vminus eighty-six hminus forty-eight vone-zero-six l seventy-nine seventy-nine Z"/></svg>
   <input type="datetime-local" name="date" required>
+  </div>
+  </div>
 
+  <div class="form-group">
   <label>Location</label>
+  <div class="input-wrap">
+  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M531-501q21-21 21-51t-21-51q-21-21-51-21t-51 21q-21 21-21 51t21 51q21 21 51 21t51-21Zm-51 310q119-107 179.5-197T720-549q0-105-68.5-174T480-792q-103 0-171.5 69T240-549q0 71 60.5 161T480-191Zm0 95Q323-227 245.5-339.5T168-549q0-134 89-224.5T480-864q133 0 222.5 90.5T792-549q0 97-77 209T480-96Zm0-456Z"/></svg>
   <input type="text" name="location" required>
+  </div>
+  </div>
 
-  <label>Max Participants</label>
-  <input type="number" name="max_participants" min="1">
 
-  <label>Category</label>
-  <select name="category_id" required>
-    {% for category in categories %}
-      <option value="{{ category.id }}">{{ category.name }}</option>
-    {% endfor %}
-  </select>
+  <div class="form-group">
+    <label>Max Participants</label>
+    <div class="input-wrap">
+      <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M0-240v-59q0-51 45-80t123-29q15 0 30 1.5t30 4.5q-17 20-26.5 45t-9.5 50.56V-240H0Zm240 0v-61q0-27.86 14.5-50.93T293-387q44-22 91-33.5t95.53-11.5Q529-432 576-420.5t91 33.5q24 12 38.5 35.07T720-301v61H240Zm528 0v-67.37q0-26.95-9.5-50.79T732-402q17-3 31.5-4.5T792-408q78 0 123 29t45 80v59H768Zm-454-72h332q-7-17-59.5-32.5T480-360q-54 0-106.5 15.5T314-312ZM167.79-456Q138-456 117-477.03q-21-21.02-21-50.55Q96-558 117.03-579q21.02-21 50.55-21Q198-600 219-579.24t21 51.45Q240-498 219.24-477t-51.45 21Zm624 0Q762-456 741-477.03q-21-21.02-21-50.55Q720-558 741.03-579q21.02-21 50.55-21Q822-600 843-579.24t21 51.45Q864-498 843.24-477t-51.45 21ZM479.5-480q-49.5 0-84.5-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85.5q0 49.5-35 84.5t-85.5 35Zm.5-72q20.4 0 34.2-13.8Q528-579.6 528-600q0-20.4-13.8-34.2Q500.4-648 480-648q-20.4 0-34.2 13.8Q432-620.4 432-600q0 20.4 13.8 34.2Q459.6-552 480-552Zm0 240Zm0-288Z"/></svg>
+      <input type="number" name="max_participants" min="1">
+    </div>
+  </div>
 
-  <button type="submit">Create Event</button>
+  
+  <div class="form-group">
+    <label>Category</label>
+    <div class="input-wrap">
+      <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="m276-528 204-336 204 336H276ZM696-96q-70 0-119-49t-49-119q0-70 49-119t119-49q70 0 119 49t49 119q0 70-49 119T696-96Zm-552-24v-288h288v288H144Zm551.77-48Q736-168 764-195.77q28-27.78 28-68Q792-304 764.23-332q-27.78-28-68-28Q656-360 628-332.23q-28 27.78-28 68Q600-224 627.77-196q27.78 28 68 28ZM216-192h144v-144H216v144Zm188-408h152l-76-125-76 125Zm76 0ZM360-336Zm331 67Z"/></svg>
+      <select name="category_id" required>
+        {% for category in categories %}
+          <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <button class="btn-submit" type="submit">Create Event</button>
+
 </form>
 </div>
 </div>

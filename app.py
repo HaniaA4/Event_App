@@ -69,8 +69,16 @@ def inject_current_user():
 
 @app.route("/") 
 def home():
-    return render_template("index.html")
+    events = list(Event.select())
+    profiles = list(User.select())
+    categories = list(Category.select())
 
+    return render_template(
+        "index.html",
+        events=events,
+        profiles=profiles,
+        categories=categories
+    )
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

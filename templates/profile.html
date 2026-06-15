@@ -12,7 +12,7 @@
 {% block content %}
 <div class="profile-page">
 
-  <div class="event-title">
+  <div class="page-header">
     <h2>My Account</h2>
     <p>Manage your events and registrations.</p>
   </div>
@@ -26,33 +26,42 @@
     <a href="{{ url_for('create_event') }}" class="btn btn-primary add-event-btn">+ Add Event</a>
 
 
-
-<section class="events-grid" id="eventsGrid">
-<a class="event-body glass event-card reveal">
+<div class="events-grid" id="eventsGrid">
+<section class="glass event-card reveal" id="eventsGrid">
+<a class="">
+    <div class="event-body">
+    <div class="event-category">
     <h3 class="event-title">Events I organize</h3>
     {% if organized_events %} 
             {% for event in organized_events %}
-                <p class="event-title">{{ event.title }} — {{ event.date }} @ {{ event.location }}</p>
+                <div class="event-meta-row">{{ event.title }} — {{ event.date }} @ {{ event.location }}</div><br>
             {% endfor %}
     {% else %}
         <p>You haven't organized any events yet.</p>
     {% endif %}
+    </div>
+    </div>
 </a>
 </section>
 
-<section class="events-grid glass " id="myRegistrations">
-    <a class="event-body glass event-card reveal">
+<section class="glass event-card reveal" id="myRegistrations">
+    <a class="">
+        <div class="event-body">
+        <div class="event-category">
     <h3 class="event-title">My registrations</h3>
     {% if my_registrations %}
     
             {% for registration in my_registrations %}
-                <p class="event-title">{{ registration.event.title }} — {{ registration.event.date }}</p>
+                <div class="event-meta-row">{{ registration.event.title }} — {{ registration.event.date }}</div><br>
             {% endfor %}
     {% else %}
         <p>You are not registered for any events yet.</p>
-    {% endif %}
-</a>
+    {% endif %}     
+    </div>
+    </div>  
+    </a>
 </section>
+</div>  
 </div>
 </div>
 {% endblock %}

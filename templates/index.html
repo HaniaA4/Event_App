@@ -51,9 +51,9 @@
         <a href="{{ url_for('profile') if current_user else url_for('login') }}" class="btn btn-outline btn-lg">Host a Meetup</a>
       </div>
       <div class="hero-stats">
-        <div class="stat"><div class="stat-num">120+</div><div class="stat-label">Events</div></div>
-        <div class="stat"><div class="stat-num">3.4k</div><div class="stat-label">Members</div></div>
-        <div class="stat"><div class="stat-num">18</div><div class="stat-label">Categories</div></div>
+        <div class="stat"><div class="stat-num">{{ events|length }}</div><div class="stat-label">Events</div></div>
+        <div class="stat"><div class="stat-num">{{ profiles|length }}</div><div class="stat-label">Members</div></div>
+        <div class="stat"><div class="stat-num">{{ categories|length }}</div><div class="stat-label">Categories</div></div>
       </div>
     </section>
 
@@ -61,14 +61,38 @@
       <div class="section-header reveal">
         <div><h2 class="section-title">Browse by <em>Category</em></h2><p class="section-sub">What are you into?</p></div>
       </div>
-      <div class="categories-grid reveal">
-        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">📚</span><div class="cat-name">Study Sessions</div><div class="cat-count">24 events</div></a>
-        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">🛠️</span><div class="cat-name">Workshops</div><div class="cat-count">18 events</div></a>
-        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">⚽</span><div class="cat-name">Sports</div><div class="cat-count">31 events</div></a>
-        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">🎭</span><div class="cat-name">Cultural</div><div class="cat-count">15 events</div></a>
-        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">🎤</span><div class="cat-name">Talks</div><div class="cat-count">9 events</div></a>
-        <a href="{{ url_for('events') }}" class="glass category-card"><span class="cat-icon">👥</span><div class="cat-name">Group Meetings</div><div class="cat-count">23 events</div></a>
-      </div>
+<div class="categories-grid reveal">
+  {% for category in categories %}
+    <a href="{{ url_for('events') }}" class="glass category-card">
+
+      <span class="cat-icon">
+        {% if category.name == "Study Sessions" %}
+          📚
+        {% elif category.name == "Workshops" %}
+          🛠️
+        {% elif category.name == "Sports" %}
+          ⚽
+        {% elif category.name == "Cultural" %}
+          🎭
+        {% elif category.name == "Talks" %}
+          🎤
+        {% elif category.name == "Group Meetings" %}
+          👥
+        {% else %}
+          📌
+        {% endif %}
+      </span>
+
+      <div class="cat-name">{{ category.name }}</div>
+
+  {% set count = category.events.count() %}
+  <div class="cat-count">
+    {{ count }} event{% if count != 1 %}s{% endif %}
+  </div>
+
+    </a>
+  {% endfor %}
+</div>
     </div>
 
     <div class="section" style="padding-top:0;">
@@ -76,7 +100,48 @@
         <div><h2 class="section-title">Featured <em>Events</em></h2><p class="section-sub">Happening soon — don't miss out</p></div>
         <a href="{{ url_for('events') }}" class="btn btn-ghost">See all →</a>
       </div>
-      <div class="events-grid" id="eventsGrid"></div>
+      <div class="events-grid" id="eventsGrid">
+          {% for event in events[:3] %}
+          {% set registered = event.registrations.count() %}
+          {% set spots_left = event.max_participants - registered if event.max_participants else 9999 %}
+
+    <a href="{{ url_for('event_detail', event_id=event.id) }}"
+       class="glass event-card reveal">
+      <div class="event-body">
+        <div class="event-category">{{ event.category.name }}</div>
+        <h3 class="event-title">{{ event.title }}</h3>
+
+        <div class="event-meta">
+          <div class="event-meta-row">📅 {{ event.date }}</div>
+          <div class="event-meta-row">📍 {{ event.location }}</div>
+        </div>
+
+        <div class="event-footer">
+          <div class="event-participants">
+            <strong>{{ registered }}</strong>
+            {% if event.max_participants %}
+              /{{ event.max_participants }} going
+            {% else %}
+              going
+            {% endif %}
+          </div>
+
+          {% if event.max_participants %}
+            {% if spots_left <= 0 %}
+              <span class="spots-badge spots-full">Full</span>
+            {% elif spots_left <= 5 %}
+              <span class="spots-badge spots-low">Only {{ spots_left }} left!</span>
+            {% else %}
+              <span class="spots-badge spots-ok">{{ spots_left }} spots left</span>
+            {% endif %}
+          {% else %}
+            <span class="spots-badge spots-ok">Open</span>
+          {% endif %}
+        </div>
+      </div>
+    </a>
+  {% endfor %}
+      </div>
     </div>
 
     <div class="cta-wrap">

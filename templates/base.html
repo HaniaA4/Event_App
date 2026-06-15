@@ -7,15 +7,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='events.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='create_event.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
     <iframe src="{{ url_for('static', filename='background.html') }}" class="bg-frame" title="background"></iframe>
 
-<header>
+    <header>
     <nav class="navbar">
-        <a href="{{ url_for('home') }}" class="nav-logo">Home</a>
+        <a href="{{ url_for('home') }}" class="nav-logo">Event<em>Hub</em></a>
         <ul class="nav-links" id="navLinks">
         {% if current_user %}
             <li>Hi!👋 {{ current_user.full_name }}</li>
@@ -28,9 +29,21 @@
             <li><a href="{{ url_for('login') }}">Login</a></li>
             <li><a href="{{ url_for('login') }}#register">Sign up</a></li>
         {% endif %}  
-        </ul>
+        </ul>   
     </nav>
 </header>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
 <main>
     {% with messages = get_flashed_messages(with_categories=True) %}

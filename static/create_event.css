@@ -1,0 +1,30 @@
+.form-group textarea, .form-group select {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.7rem;
+  background: var(--input-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: var(--text-main);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.form-group textarea::placeholder, .form-group select::placeholder { color: var(--text-muted); }
+
+.form-group textarea:focus, .form-group select:focus {
+  border-color: rgba(92,124,250,0.5);
+  background: rgba(92,124,250,0.05);
+}
+
+.form-group select option {
+  background: #111827; 
+  color: var(--text-main);
+}
+
+.form-group textarea {
+    resize: none;
+    overflow: hidden;
+    min-height: 150px;
+}
