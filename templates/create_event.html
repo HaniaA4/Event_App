@@ -3,14 +3,29 @@
 {% block title %}Create Event{% endblock %}
 
 {% block content %}
-<h2>Create Event</h2>
+
+<div class="auth-page">
+<div class="auth-container">
+<div class="auth-card"> 
+
+<div class="form-panel active">
+  <div class="form-header">
+  <h2>Create Event</h2>
+  </div>    
 
 <form method="POST" action="{{ url_for('create_event') }}">
-  <label>Title</label>
-  <input type="text" name="title" required>
 
+  <div class="form-group">
+  <label>Title</label>
+  <div class="input-wrap">
+  <input type="text" name="title" required>
+  </div>
+  </div>
+
+  <div class="form-group">
   <label>Description</label>
   <textarea name="description"></textarea>
+  </div>
 
   <label>Date and Time</label>
   <input type="datetime-local" name="date" required>
@@ -30,4 +45,11 @@
 
   <button type="submit">Create Event</button>
 </form>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
 {% endblock %}

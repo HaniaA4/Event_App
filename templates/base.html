@@ -4,22 +4,31 @@
     <meta charset="utf-8">
     <title>{% block title %}Event App{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='events.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
+
+    <iframe src="{{ url_for('static', filename='background.html') }}" class="bg-frame" title="background"></iframe>
+
 <header>
-    <nav>
-        <a href="{{ url_for('home') }}">Home</a>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="nav-logo">Home</a>
+        <ul class="nav-links" id="navLinks">
         {% if current_user %}
-            <span>Logged in as {{ current_user.full_name }}</span>
-            <a href="{{ url_for('profile') }}">My Account</a>
+            <li>Hi!👋 {{ current_user.full_name }}</li>
+            <li><a href="{{ url_for('profile') }}">My Account</a></li>
             {% if current_user.is_admin %}
-                <a href="{{ url_for('admin') }}">Admin</a>
+                <li><a href="{{ url_for('admin') }}">Admin</a></li>
             {% endif %}
-            <a href="{{ url_for('logout') }}">Logout</a>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
         {% else %}
-            <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{ url_for('login') }}#register">Sign up</a>
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('login') }}#register">Sign up</a></li>
         {% endif %}  
+        </ul>
     </nav>
 </header>
 
@@ -36,5 +45,8 @@
 
     {% block content %}{% endblock %}
 </main>
+<script src="{{ url_for('static', filename='events.js') }}"></script>
+<script src="{{ url_for('static', filename='login.js') }}"></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>

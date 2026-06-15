@@ -21,7 +21,9 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="{{ url_for('home') }}">Home</a></li>
       <li><a href="{{ url_for('events') }}">Events</a></li>
+      {% if current_user %}
       <li><a href="{{ url_for('profile') }}" class="active">My Area</a></li>
+      {% endif %}
     </ul>
   <div class="nav-cta">
     {% if current_user %}
