@@ -14,7 +14,7 @@ from datetime import datetime
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from peewee import prefetch
-from models import db, initialize_database, User, Category, Event, Registration, Comment
+from models import db, initialize_database, User, Category, Event, Registration, Comment, Favorite
 
 
 app = Flask(__name__)
@@ -166,6 +166,16 @@ def parse_admin_registration_form():
     return {"errors": errors, "user": user}
 
 
+def get_user_favorite_event_ids(user):
+    if user is None:
+        return set()
+
+    return {
+        favorite.event_id
+        for favorite in Favorite.select(Favorite.event).where(Favorite.user == user)
+    }
+
+
 @app.route("/") 
 def home():
     events = list(Event.select())
@@ -268,18 +278,31 @@ def profile():
     my_registrations = list(
         Registration.select().where(Registration.user == current_user)
     )
+
+    my_favorites = list(
+        Event.select()
+        .join(Favorite)
+        .where(Favorite.user == current_user)
+        .order_by(Event.date)
+    )
     
     return render_template(
         "profile.html",
         organized_events=organized_events,
         my_registrations=my_registrations,
+        my_favorites=my_favorites,
     )
 
 
 @app.route("/events")
 def events():
     all_events = Event.select()
-    return render_template("events.html", events=all_events)
+    favorite_event_ids = get_user_favorite_event_ids(get_current_user())
+    return render_template(
+        "events.html",
+        events=all_events,
+        favorite_event_ids=favorite_event_ids,
+    )
 
 @app.route("/events/create", methods=["GET", "POST"])
 @login_required
@@ -329,6 +352,7 @@ def event_detail(event_id):
         spots_left = event.max_participants - registrations_count
         
     is_registered = False
+    is_favorite = False
     current_user = get_current_user()
     if current_user:
         existing = Registration.get_or_none(
@@ -336,6 +360,12 @@ def event_detail(event_id):
             (Registration.event == event)
         )
         is_registered = existing is not None
+
+        favorite = Favorite.get_or_none(
+            (Favorite.user == current_user) &
+            (Favorite.event == event)
+        )
+        is_favorite = favorite is not None
         
     comments = list(event.comments)
 
@@ -345,8 +375,53 @@ def event_detail(event_id):
         registrations_count=registrations_count,
         spots_left=spots_left,
         is_registered=is_registered,
+        is_favorite=is_favorite,
         comments=comments,
     )
+
+
+@app.route("/event/<int:event_id>/favorite", methods=["POST"])
+@login_required
+def add_favorite(event_id):
+    current_user = get_current_user()
+
+    event = Event.get_or_none(Event.id == event_id)
+    if event is None:
+        abort(404)
+
+    existing = Favorite.get_or_none(
+        (Favorite.user == current_user) &
+        (Favorite.event == event)
+    )
+    if existing is not None:
+        flash("This event is already in your favorites.", "warning")
+        return redirect(url_for("event_detail", event_id=event.id))
+
+    Favorite.create(user=current_user, event=event)
+    flash("Event added to favorites.", "success")
+    return redirect(url_for("event_detail", event_id=event.id))
+
+
+@app.route("/event/<int:event_id>/unfavorite", methods=["POST"])
+@login_required
+def remove_favorite(event_id):
+    current_user = get_current_user()
+
+    event = Event.get_or_none(Event.id == event_id)
+    if event is None:
+        abort(404)
+
+    favorite = Favorite.get_or_none(
+        (Favorite.user == current_user) &
+        (Favorite.event == event)
+    )
+    if favorite is None:
+        flash("This event is not in your favorites.", "warning")
+        return redirect(url_for("event_detail", event_id=event.id))
+
+    favorite.delete_instance()
+    flash("Event removed from favorites.", "success")
+    return redirect(url_for("event_detail", event_id=event.id))
 
 
 @app.route("/event/<int:event_id>/register", methods=["POST"])
@@ -506,6 +581,7 @@ def admin_delete_event(event_id):
         abort(404)
 
     Registration.delete().where(Registration.event == event).execute()
+    Favorite.delete().where(Favorite.event == event).execute()
     Comment.delete().where(Comment.event == event).execute()
     event.delete_instance()
 

@@ -111,6 +111,19 @@
                   Register for this event
                 </button>
               </form>
+
+              {% if current_user %}
+                {% if is_favorite %}
+                  <form method="POST" action="{{ url_for('remove_favorite', event_id=event.id) }}" style="margin-top: 0.7rem;">
+                    <button type="submit" class="btn btn-ghost btn-lg">★ Remove from favorites</button>
+                  </form>
+                {% else %}
+                  <form method="POST" action="{{ url_for('add_favorite', event_id=event.id) }}" style="margin-top: 0.7rem;">
+                    <button type="submit" class="btn btn-ghost btn-lg">☆ Add to favorites</button>
+                  </form>
+                {% endif %}
+              {% endif %}
+
               <p class="login-note">
                 Already have an account? <a href="{{ url_for('login') }}">Log in</a> to register faster.
               </p>

@@ -34,6 +34,14 @@ class Registration(BaseModel):
     user = ForeignKeyField(User, backref="registrations")
     event = ForeignKeyField(Event, backref="registrations")
 
+
+class Favorite(BaseModel):
+    user = ForeignKeyField(User, backref="favorites")
+    event = ForeignKeyField(Event, backref="favorites")
+
+    class Meta:
+        indexes = ((('user', 'event'), True),)
+
 class Comment(BaseModel):
     text = TextField()
     event = ForeignKeyField(Event, backref="comments")
@@ -42,7 +50,7 @@ class Comment(BaseModel):
 
 def initialize_database():
     db.connect(reuse_if_open=True)
-    db.create_tables([User, Category, Event, Registration, Comment], safe=True)
+    db.create_tables([User, Category, Event, Registration, Favorite, Comment], safe=True)
 
     default_categories = [
         "Study Sessions",
