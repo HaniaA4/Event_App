@@ -96,6 +96,9 @@
 
       <div class="event-body">
         <div class="event-category">{{ event.category.name }}</div>
+        {% if current_user and event.id in favorite_event_ids %}
+          <div class="event-meta-row">★ In your favorites</div>
+        {% endif %}
         <h3 class="event-title">{{ event.title }}</h3>
 
         <div class="event-meta">
