@@ -13,6 +13,7 @@ from functools import wraps
 from datetime import datetime
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
+from peewee import prefetch
 from models import db, initialize_database, User, Category, Event, Registration, Comment
 
 
@@ -72,7 +73,13 @@ def render_admin_dashboard(editing_event=None):
     return render_template(
         "admin.html",
         categories=list(Category.select().order_by(Category.name)),
-        events=list(Event.select().order_by(Event.date.desc())),
+        events=list(
+            prefetch(
+                Event.select().order_by(Event.date.desc()),
+                Registration.select(),
+                User.select(),
+            )
+        ),
         users=list(User.select().order_by(User.full_name)),
         editing_event=editing_event,
     )
@@ -144,6 +151,19 @@ def parse_admin_event_form():
 
 def parse_admin_category_name():
     return request.form.get("name", "").strip()
+
+
+def parse_admin_registration_form():
+    user_id = request.form.get("user_id", "").strip()
+    user = User.get_or_none(User.id == user_id) if user_id else None
+
+    errors = []
+    if not user_id:
+        errors.append("Select a participant.")
+    elif user is None:
+        errors.append("Selected participant does not exist.")
+
+    return {"errors": errors, "user": user}
 
 
 @app.route("/") 
@@ -490,6 +510,61 @@ def admin_delete_event(event_id):
     event.delete_instance()
 
     flash("Event deleted successfully.", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/events/<int:event_id>/registrations/<int:registration_id>/edit", methods=["POST"])
+@admin_required
+def admin_edit_registration(event_id, registration_id):
+    event = Event.get_or_none(Event.id == event_id)
+    if event is None:
+        abort(404)
+
+    registration = Registration.get_or_none(
+        (Registration.id == registration_id) &
+        (Registration.event == event)
+    )
+    if registration is None:
+        abort(404)
+
+    form = parse_admin_registration_form()
+    if form["errors"]:
+        for error in form["errors"]:
+            flash(error, "error")
+        return redirect(url_for("admin"))
+
+    if Registration.get_or_none(
+        (Registration.event == event) &
+        (Registration.user == form["user"]) &
+        (Registration.id != registration.id)
+    ) is not None:
+        flash("That participant is already registered for this event.", "error")
+        return redirect(url_for("admin"))
+
+    registration.user = form["user"]
+    registration.save()
+
+    flash("Participant updated successfully.", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/events/<int:event_id>/registrations/<int:registration_id>/delete", methods=["POST"])
+@admin_required
+def admin_delete_registration(event_id, registration_id):
+    event = Event.get_or_none(Event.id == event_id)
+    if event is None:
+        abort(404)
+
+    registration = Registration.get_or_none(
+        (Registration.id == registration_id) &
+        (Registration.event == event)
+    )
+    if registration is None:
+        abort(404)
+
+    registration.delete_instance()
+
+    flash("Participant removed from the event.", "success")
     return redirect(url_for("admin"))
 
 

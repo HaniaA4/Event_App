@@ -171,15 +171,22 @@
                         <div class="event-card-meta">
                             <span><strong>Organizer:</strong> {{ event.organizer.full_name }}</span>
                             <span><strong>Status:</strong> {{ event.status }}</span>
-                            <span><strong>Registrations:</strong> {{ event.registrations.count() }}</span>
+                            <span><strong>Registrations:</strong> {{ event.registrations|length }}</span>
                         </div>
 
-                        {% if event.registrations.count() > 0 %}
+                        {% if event.registrations|length > 0 %}
                             <div class="attendee-list">
                                 {% for registration in event.registrations %}
-                                    <div class="attendee-pill">
-                                        <span>{{ registration.user.full_name }}</span>
-                                        <small>{{ registration.user.email }}</small>
+                                    <div class="attendee-card">
+                                        <div class="attendee-card-top">
+                                            <div class="attendee-card-copy">
+                                                <span class="attendee-name">{{ registration.user.full_name }}</span>
+                                                <small>{{ registration.user.email }}</small>
+                                            </div>
+                                            <form method="post" action="{{ url_for('admin_delete_registration', event_id=event.id, registration_id=registration.id) }}" onsubmit="return confirm('Remove this participant from the event?');">
+                                                <button class="btn btn-danger" type="submit">Remove</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 {% endfor %}
                             </div>

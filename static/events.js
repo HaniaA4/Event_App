@@ -12,6 +12,10 @@ function filterAndSortCards() {
   const empty = document.getElementById('emptyState');
   const count = document.getElementById('resultsCount');
 
+  if (!grid) {
+    return;
+  }
+
   let visibleCards = cards.filter(card => {
     const category = card.dataset.category || '';
     const title = card.dataset.title || '';
