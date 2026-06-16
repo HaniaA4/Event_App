@@ -123,17 +123,21 @@ def parse_admin_event_form():
         except ValueError:
             errors.append("Maximum participants must be a number.")
 
+        #add a maximum number of participants if the option is chosen
+
     category = Category.get_or_none(Category.id == category_id) if category_id else None
     if category_id and category is None:
         errors.append("Selected category does not exist.")
     if not category_id:
         errors.append("Select a category for the event.")
+        #Mandatory selection of a category
 
     organizer = User.get_or_none(User.id == organizer_id) if organizer_id else None
     if organizer_id and organizer is None:
         errors.append("Selected organizer does not exist.")
     if not organizer_id:
         errors.append("Select an organizer for the event.")
+    # Mandatory selection of an organizer
 
     return {
         "errors": errors,
@@ -169,7 +173,7 @@ def parse_admin_registration_form():
 def get_user_favorite_event_ids(user):
     if user is None:
         return set()
-
+    # get favorite events
     return {
         favorite.event_id
         for favorite in Favorite.select(Favorite.event).where(Favorite.user == user)
@@ -497,7 +501,7 @@ def add_comment(event_id):
 
 
 @app.route("/make-admin/<email>") 
-def make_admin(email): # temporary bootstrap route
+def make_admin(email):
     if User.get_or_none(User.is_admin == True) is not None:
         abort(403)
         
