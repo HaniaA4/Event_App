@@ -10,6 +10,7 @@ from flask import (
 )
 
 from functools import wraps
+from datetime import datetime
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, initialize_database, User, Category, Event, Registration, Comment
@@ -65,6 +66,84 @@ def admin_required(f):
 @app.context_processor
 def inject_current_user():
     return {"current_user": get_current_user()}
+
+
+def render_admin_dashboard(editing_event=None):
+    return render_template(
+        "admin.html",
+        categories=list(Category.select().order_by(Category.name)),
+        events=list(Event.select().order_by(Event.date.desc())),
+        users=list(User.select().order_by(User.full_name)),
+        editing_event=editing_event,
+    )
+
+
+def parse_admin_event_form():
+    title = request.form.get("title", "").strip()
+    description = request.form.get("description", "").strip() or None
+    date_value = request.form.get("date", "").strip()
+    location = request.form.get("location", "").strip()
+    status = request.form.get("status", "open").strip()
+    max_participants_value = request.form.get("max_participants", "").strip()
+    map_link = request.form.get("map_link", "").strip() or None
+    category_id = request.form.get("category_id", "").strip()
+    organizer_id = request.form.get("organizer_id", "").strip()
+
+    errors = []
+
+    if not title:
+        errors.append("Event title is required.")
+    if not date_value:
+        errors.append("Event date is required.")
+    if not location:
+        errors.append("Event location is required.")
+    if status not in {"open", "closed"}:
+        errors.append("Event status must be open or closed.")
+
+    event_date = None
+    if date_value:
+        try:
+            event_date = datetime.fromisoformat(date_value)
+        except ValueError:
+            errors.append("Event date must be a valid date and time.")
+
+    max_participants = None
+    if max_participants_value:
+        try:
+            max_participants = int(max_participants_value)
+            if max_participants < 1:
+                errors.append("Maximum participants must be at least 1.")
+        except ValueError:
+            errors.append("Maximum participants must be a number.")
+
+    category = Category.get_or_none(Category.id == category_id) if category_id else None
+    if category_id and category is None:
+        errors.append("Selected category does not exist.")
+    if not category_id:
+        errors.append("Select a category for the event.")
+
+    organizer = User.get_or_none(User.id == organizer_id) if organizer_id else None
+    if organizer_id and organizer is None:
+        errors.append("Selected organizer does not exist.")
+    if not organizer_id:
+        errors.append("Select an organizer for the event.")
+
+    return {
+        "errors": errors,
+        "title": title,
+        "description": description,
+        "date": event_date,
+        "location": location,
+        "status": status,
+        "max_participants": max_participants,
+        "map_link": map_link,
+        "category": category,
+        "organizer": organizer,
+    }
+
+
+def parse_admin_category_name():
+    return request.form.get("name", "").strip()
 
 
 @app.route("/") 
@@ -340,7 +419,134 @@ def make_admin(email): # temporary bootstrap route
 @app.route("/admin")
 @admin_required
 def admin():
-    return render_template("admin.html")
+    return render_admin_dashboard()
+
+
+@app.route("/admin/events/create", methods=["POST"])
+@admin_required
+def admin_create_event():
+    form = parse_admin_event_form()
+    if form["errors"]:
+        for error in form["errors"]:
+            flash(error, "error")
+        return redirect(url_for("admin"))
+
+    Event.create(
+        title=form["title"],
+        description=form["description"],
+        date=form["date"],
+        location=form["location"],
+        status=form["status"],
+        max_participants=form["max_participants"],
+        map_link=form["map_link"],
+        category=form["category"],
+        organizer=form["organizer"],
+    )
+
+    flash("Event created successfully.", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/events/<int:event_id>/edit", methods=["GET", "POST"])
+@admin_required
+def admin_edit_event(event_id):
+    event = Event.get_or_none(Event.id == event_id)
+    if event is None:
+        abort(404)
+
+    if request.method == "POST":
+        form = parse_admin_event_form()
+        if form["errors"]:
+            for error in form["errors"]:
+                flash(error, "error")
+            return redirect(url_for("admin_edit_event", event_id=event.id))
+
+        event.title = form["title"]
+        event.description = form["description"]
+        event.date = form["date"]
+        event.location = form["location"]
+        event.status = form["status"]
+        event.max_participants = form["max_participants"]
+        event.map_link = form["map_link"]
+        event.category = form["category"]
+        event.organizer = form["organizer"]
+        event.save()
+
+        flash("Event updated successfully.", "success")
+        return redirect(url_for("admin"))
+
+    return render_admin_dashboard(editing_event=event)
+
+
+@app.route("/admin/events/<int:event_id>/delete", methods=["POST"])
+@admin_required
+def admin_delete_event(event_id):
+    event = Event.get_or_none(Event.id == event_id)
+    if event is None:
+        abort(404)
+
+    Registration.delete().where(Registration.event == event).execute()
+    Comment.delete().where(Comment.event == event).execute()
+    event.delete_instance()
+
+    flash("Event deleted successfully.", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/categories/create", methods=["POST"])
+@admin_required
+def admin_create_category():
+    name = parse_admin_category_name()
+    if not name:
+        flash("Category name is required.", "error")
+        return redirect(url_for("admin"))
+
+    if Category.get_or_none(Category.name == name) is not None:
+        flash("That category already exists.", "error")
+        return redirect(url_for("admin"))
+
+    Category.create(name=name)
+    flash("Category created successfully.", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/categories/<int:category_id>/edit", methods=["POST"])
+@admin_required
+def admin_edit_category(category_id):
+    category = Category.get_or_none(Category.id == category_id)
+    if category is None:
+        abort(404)
+
+    name = parse_admin_category_name()
+    if not name:
+        flash("Category name is required.", "error")
+        return redirect(url_for("admin"))
+
+    duplicate = Category.get_or_none((Category.name == name) & (Category.id != category.id))
+    if duplicate is not None:
+        flash("That category already exists.", "error")
+        return redirect(url_for("admin"))
+
+    category.name = name
+    category.save()
+    flash("Category updated successfully.", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/categories/<int:category_id>/delete", methods=["POST"])
+@admin_required
+def admin_delete_category(category_id):
+    category = Category.get_or_none(Category.id == category_id)
+    if category is None:
+        abort(404)
+
+    if category.events.count() > 0:
+        flash("You must reassign or delete the events in this category first.", "error")
+        return redirect(url_for("admin"))
+
+    category.delete_instance()
+    flash("Category deleted successfully.", "success")
+    return redirect(url_for("admin"))
 
 
 @app.errorhandler(403)
