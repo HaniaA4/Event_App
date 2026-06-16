@@ -318,12 +318,18 @@ def create_event():
 
         title = request.form.get("title", "").strip()
         description = request.form.get("description", "").strip()
-        date = request.form.get("date", "")
+        date_value = request.form.get("date", "").strip()
         location = request.form.get("location", "").strip()
         max_participants = request.form.get("max_participants", "")
         category_id = request.form.get("category_id")
 
-        if not title or not date or not location or not category_id:
+        try:    
+            event_date = datetime.fromisoformat(date_value)
+        except ValueError:
+            flash("Please enter a valid date and time.", "error")
+            return   redirect(url_for("create_event"))    
+
+        if not title or not date_value or not location or not category_id:
             flash("Please fill in all required fields.", "error")
             return redirect(url_for("create_event"))
 
@@ -332,7 +338,7 @@ def create_event():
         Event.create(
             title=title,
             description=description,
-            date=date,
+            date=event_date,
             location=location,
             max_participants=int(max_participants) if max_participants else None,
             category=category,
@@ -458,6 +464,92 @@ def register_in_event(event_id):
     flash("You are now registered in this event.", "success")
     return redirect(url_for("event_detail", event_id=event.id))
 
+@app.route("/event/<int:event_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_event(event_id):
+    current_user = get_current_user()
+    event = Event.get_or_none(Event.id == event_id)
+
+    if event is None:
+        abort(404)
+
+    if event.organizer != current_user:
+        abort(403)
+
+    categories = Category.select()
+
+    if request.method == "POST":
+        title = request.form.get("title", "").strip()
+        description = request.form.get("description", "").strip()
+        date = request.form.get("date", "").strip()
+        location = request.form.get("location", "").strip()
+        max_participants = request.form.get("max_participants", "").strip()
+        category_id = request.form.get("category_id")
+
+        if not title or not date or not location or not category_id:
+            flash("Please fill in all required fields.", "error")
+            return redirect(url_for("edit_event", event_id=event.id))
+
+        try:
+            event_date = datetime.fromisoformat(date)
+        except ValueError:
+            flash("Please enter a valid date and time.", "error")
+            return redirect(url_for("edit_event", event_id=event.id))
+
+        category = Category.get_or_none(Category.id == category_id)
+        if category is None:
+            flash("Selected category does not exist.", "error")
+            return redirect(url_for("edit_event", event_id=event.id))
+
+        max_value = None
+        if max_participants:
+            try:
+                max_value = int(max_participants)
+                if max_value < 1:
+                    flash("Maximum participants must be at least 1.", "error")
+                    return redirect(url_for("edit_event", event_id=event.id))
+            except ValueError:
+                flash("Maximum participants must be a number.", "error")
+                return redirect(url_for("edit_event", event_id=event.id))
+
+        event.title = title
+        event.description = description or None
+        event.date = event_date
+        event.location = location
+        event.max_participants = max_value
+        event.category = category
+        event.save()
+
+        flash("Event updated successfully.", "success")
+        return redirect(url_for("event_detail", event_id=event.id))
+
+    return render_template(
+        "edit_event.html",
+        event=event,
+        categories=categories
+    )
+
+
+@app.route("/event/<int:event_id>/delete", methods=["POST"])
+@login_required
+def delete_event(event_id):
+    current_user = get_current_user()
+    event = Event.get_or_none(Event.id == event_id)
+
+    if event is None:
+        abort(404)
+
+    if event.organizer != current_user:
+        abort(403)
+
+    Registration.delete().where(Registration.event == event).execute()
+    Favorite.delete().where(Favorite.event == event).execute()
+    Comment.delete().where(Comment.event == event).execute()
+
+    event.delete_instance()
+
+    flash("Event deleted successfully.", "success")
+    return redirect(url_for("profile"))
 
 @app.route("/event/<int:event_id>/cancel", methods=["POST"])
 @login_required

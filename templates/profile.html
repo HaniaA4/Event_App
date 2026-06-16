@@ -17,67 +17,199 @@
     <p>Manage your events and registrations.</p>
   </div>
 
-  <section class="event-body glass profile-card reveal">
-    <div class="event-category">Profile Information</div>
-    <p class="event-title"><strong>Name:</strong> {{ current_user.full_name }}</p>
-    <p class="event-title"><strong>Email:</strong> {{ current_user.email }}</p>
+  <section class="glass profile-card reveal">
+    <h3 class="event-title">Profile Information</h3>
+    <p class="event-category"><strong>Name:</strong> {{ current_user.full_name }}</p>
+    <p class="event-category"><strong>Email:</strong> {{ current_user.email }}</p>
   </section>
 
     <a href="{{ url_for('create_event') }}" class="btn btn-primary add-event-btn">+ Add Event</a>
 
 
 <div class="events-grid" id="eventsGrid">
-<section class="glass event-card reveal" id="eventsGrid">
-<a class="">
-    <div class="event-body">
-    <div class="event-category">
-    <h3 class="event-title">Events I organize</h3>
-    {% if organized_events %} 
-            {% for event in organized_events %}
-                <div class="event-meta-row">{{ event.title }} — {{ event.date }} @ {{ event.location }}</div><br>
-            {% endfor %}
-    {% else %}
-        <p>You haven't organized any events yet.</p>
-    {% endif %}
+<section class="glass profile-card reveal" id="organizedEvents">
+
+  <h3 class="event-title">Events I organize</h3>
+
+  {% if organized_events %}
+
+    <div class="profile-list">
+
+      {% for event in organized_events %}
+
+      <div class="profile-event-item">
+
+        <div class="event-category">
+          {{ event.category.name }}
+        </div>
+
+        <h3 class="event-title">
+          {{ event.title }}
+        </h3>
+
+        <div class="event-meta">
+          <div class="event-meta-row">
+            📅 {{ event.date }}
+          </div>
+
+          <div class="event-meta-row">
+            📍 {{ event.location }}
+          </div>
+
+          <div class="event-meta-row">
+            👤 Organizer: {{ event.organizer.full_name }}
+          </div>
+        </div>
+
+        <div class="event-actions">
+
+          <a href="{{ url_for('event_detail', event_id=event.id) }}"
+             class="btn btn-ghost">
+            View
+          </a>
+
+          <a href="{{ url_for('edit_event', event_id=event.id) }}"
+             class="btn btn-outline">
+            ✏️ Edit
+          </a>
+
+          <form method="POST"
+                action="{{ url_for('delete_event', event_id=event.id) }}"
+                onsubmit="return confirm('Delete this event? This also removes its registrations and comments.');">
+
+            <button type="submit" class="btn btn-danger">
+              🗑️ Delete
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+      {% endfor %}
+
     </div>
-    </div>
-</a>
+
+  {% else %}
+
+    <p>You haven't organized any events yet.</p>
+
+  {% endif %}
+
 </section>
 
-<section class="glass event-card reveal" id="myRegistrations">
-    <a class="">
-        <div class="event-body">
-        <div class="event-category">
-    <h3 class="event-title">My registrations</h3>
-    {% if my_registrations %}
-    
-            {% for registration in my_registrations %}
-                <div class="event-meta-row">{{ registration.event.title }} — {{ registration.event.date }}</div><br>
-            {% endfor %}
-    {% else %}
-        <p>You are not registered for any events yet.</p>
-    {% endif %}     
+<section class="glass profile-card reveal" id="myRegistrations">
+  <h3 class="event-title">My registrations</h3>
+
+  {% if my_registrations %}
+    <div class="profile-list">
+      {% for registration in my_registrations %}
+        <div class="profile-event-item">
+
+          <div class="event-category">
+            {{ registration.event.category.name }}
+          </div>
+
+          <h3 class="event-title">
+            {{ registration.event.title }}
+          </h3>
+
+          <div class="event-meta">
+            <div class="event-meta-row">📅 {{ registration.event.date }}</div>
+            <div class="event-meta-row">📍 {{ registration.event.location }}</div>
+          </div>
+
+          <div class="event-actions">
+            <a href="{{ url_for('event_detail', event_id=registration.event.id) }}"
+               class="btn btn-ghost">
+              View
+            </a>
+
+            <form method="POST"
+                  action="{{ url_for('cancel_registration', event_id=registration.event.id) }}"
+                  onsubmit="return confirm('Cancel your registration for this event?');">
+              <button type="submit" class="btn btn-danger">
+                Cancel Registration
+              </button>
+            </form>
+          </div>
+
+        </div>
+      {% endfor %}
     </div>
-    </div>  
-    </a>
+  {% else %}
+    <p>You are not registered for any events yet.</p>
+  {% endif %}
 </section>
 
-<section class="glass event-card reveal" id="myFavorites">
-    <a class="">
-        <div class="event-body">
+<section class="glass profile-card reveal" id="myFavorites">
+
+  <h3 class="event-title">My favorite events</h3>
+
+  {% if my_favorites %}
+
+    <div class="profile-list">
+
+      {% for event in my_favorites %}
+
+      <div class="profile-event-item">
+
         <div class="event-category">
-    <h3 class="event-title">My favorite events</h3>
-    {% if my_favorites %}
-            {% for event in my_favorites %}
-                <div class="event-meta-row"><a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a> — {{ event.date }}</div><br>
-            {% endfor %}
-    {% else %}
-        <p>You have no favorite events yet.</p>
-    {% endif %}
+          {{ event.category.name }}
+        </div>
+
+        <h3 class="event-title">
+          {{ event.title }}
+        </h3>
+
+        <div class="event-meta">
+          <div class="event-meta-row">
+            📅 {{ event.date }}
+          </div>
+
+          <div class="event-meta-row">
+            📍 {{ event.location }}
+          </div>
+
+          <div class="event-meta-row">
+            👤 Organizer: {{ event.organizer.full_name }}
+          </div>
+        </div>
+
+        <div class="event-actions">
+
+          <a href="{{ url_for('event_detail', event_id=event.id) }}"
+             class="btn btn-ghost">
+            View
+          </a>
+
+          <form method="POST"
+                action="{{ url_for('remove_favorite', event_id=event.id) }}"
+                onsubmit="return confirm('Remove this event from favorites?');">
+
+            <button type="submit" class="btn btn-danger">
+              ★ Remove
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+      {% endfor %}
+
     </div>
-    </div>
-    </a>
+
+  {% else %}
+
+    <p>You have no favorite events yet.</p>
+
+  {% endif %}
+
 </section>
+
 </div>  
 </div>
 </div>

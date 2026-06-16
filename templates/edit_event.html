@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Event{% endblock %}
+
+{% block content %}
+
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="auth-card">
+
+      <div class="form-panel active">
+        <div class="form-header">
+          <h2>Edit Event ✏️</h2>
+          <p>Update your event details.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('edit_event', event_id=event.id) }}">
+
+          <div class="form-group">
+            <label>Title</label>
+            <div class="input-wrap">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3">
+                <path d="M432-192v-480H240v-96h480v96H528v480h-96Z"/>
+              </svg>
+
+              <input
+                type="text"
+                name="title"
+                value="{{ event.title }}"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <div class="input-wrap">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3">
+                <path d="M336-240h288v-72H336v72Zm0-144h288v-72H336v72ZM263.72-96Q234-96 213-117.15T192-168v-624q0-29.7 21.15-50.85Q234.3-864 264-864h312l192 192v504q0 29.7-21.16 50.85Q725.68-96 695.96-96H263.72ZM528-624v-168H264v624h432v-456H528Z"/>
+              </svg>
+
+              <textarea
+                id="description"
+                name="description"
+              >{{ event.description or '' }}</textarea>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Date and Time</label>
+            <div class="input-wrap">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3">
+                <path d="M216-600h528v-96H216v96Zm0 504q-29.7 0-50.85-21.15Q144-138.3 144-168v-528q0-29 21.5-50.5T216-768h72v-96h72v96h240v-96h72v96h72q29 0 50.5 21.5T816-696v528q0 29.7-21.15 50.85Q773.7-96 744-96H216Zm0-72h528v-360H216v360Z"/>
+              </svg>
+
+              <input
+                type="datetime-local"
+                name="date"
+                value="{{ event.date|string }}"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Location</label>
+            <div class="input-wrap">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3">
+                <path d="M531-501q21-21 21-51t-21-51q-21-21-51-21t-51 21q-21 21-21 51t21 51q21 21 51 21t51-21Zm-51 310q119-107 179.5-197T720-549q0-105-68.5-174T480-792q-103 0-171.5 69T240-549q0 71 60.5 161T480-191Z"/>
+              </svg>
+
+              <input
+                type="text"
+                name="location"
+                value="{{ event.location }}"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Max Participants</label>
+            <div class="input-wrap">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3">
+                <path d="M0-240v-59q0-51 45-80t123-29q15 0 30 1.5t30 4.5q-17 20-26.5 45t-9.5 50.56V-240H0Zm240 0v-61q0-27.86 14.5-50.93T293-387q44-22 91-33.5t95.53-11.5Q529-432 576-420.5t91 33.5q24 12 38.5 35.07T720-301v61H240Z"/>
+              </svg>
+
+              <input
+                type="number"
+                name="max_participants"
+                min="1"
+                value="{{ event.max_participants or '' }}"
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Category</label>
+            <div class="input-wrap">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3">
+                <path d="m276-528 204-336 204 336H276ZM696-96q-70 0-119-49t-49-119q0-70 49-119t119-49q70 0 119 49t49 119q0 70-49 119T696-96Zm-552-24v-288h288v288H144Z"/>
+              </svg>
+
+              <select name="category_id" required>
+                {% for category in categories %}
+                  <option
+                    value="{{ category.id }}"
+                    {% if category.id == event.category.id %}selected{% endif %}
+                  >
+                    {{ category.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <button class="btn-submit" type="submit">
+            Save Changes
+          </button>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const desc = document.getElementById("description");
+
+  if (desc) {
+    const resizeTextarea = () => {
+      desc.style.height = "auto";
+      desc.style.height = desc.scrollHeight + "px";
+    };
+
+    desc.addEventListener("input", resizeTextarea);
+    resizeTextarea();
+  }
+</script>
+
+{% endblock %}
+
+{% block extra_css %}
+{% endblock %}

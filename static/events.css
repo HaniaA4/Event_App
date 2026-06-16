@@ -160,6 +160,18 @@
   line-height: 1.35;
   margin-bottom: 0.75rem;
 }
+.event-footer form {
+    margin: 0;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
 
 .event-meta { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; flex: 1; }
 

@@ -37,7 +37,17 @@
       <span></span><span></span><span></span>
     </div>
   </nav>
-
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
   <div class="page">
 
     <!-- ── Page Header ── -->
@@ -156,5 +166,6 @@
   </footer>
 
   <script src="{{ url_for('static', filename='events.js') }}"></script>
+  <script src="{{ url_for('static', filename='shared.js') }}"></script>
 </body>
 </html>

@@ -36,7 +36,17 @@
   </div>
     <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   </nav>
-
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
   <div class="page">
 
     <!-- ── Hero Banner ── -->
@@ -106,12 +116,25 @@
             </div>
 
             <div class="register-area">
-              <form method="POST" action="{{ url_for('register_in_event', event_id=event.id) }}">
-                <button type="submit" class="btn btn-primary btn-lg" id="registerBtn">
-                  Register for this event
-                </button>
-              </form>
-
+              {% if current_user %}
+                {% if is_registered %}
+                  <form method="POST" action="{{ url_for('cancel_registration', event_id=event.id) }}">
+                    <button type="submit" class="btn btn-danger btn-lg" id="registerBtn">
+                      Cancel Registration
+                    </button>
+                  </form>
+                {% else %}
+                  <form method="POST" action="{{ url_for('register_in_event', event_id=event.id) }}">
+                    <button type="submit" class="btn btn-primary btn-lg" id="registerBtn">
+                      Register for this event
+                    </button>
+                  </form>
+                {% endif %}
+              {% else %}             
+                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg" id="registerBtn">
+                  Log in to register
+                </a>
+              {% endif %}
               {% if current_user %}
                 {% if is_favorite %}
                   <form method="POST" action="{{ url_for('remove_favorite', event_id=event.id) }}" style="margin-top: 0.7rem;">
@@ -162,5 +185,6 @@
 
 
   <script src="{{ url_for('static', filename='event-details.js') }}"></script>
+  <script src="{{ url_for('static', filename='shared.js') }}"></script>
 </body>
 </html>

@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}" />
 </head>
 <body>
 
@@ -33,7 +34,17 @@
   </div>
     <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   </nav>
-
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
   <div class="page">
 
     <section class="hero">
@@ -83,7 +94,7 @@
         {% endif %}
       </span>
 
-      <div class="cat-name">{{ category.name }}</div>
+   <div class="cat-name">{{ category.name }}</div>
 
   {% set count = category.events.count() %}
   <div class="cat-count">
@@ -100,7 +111,7 @@
         <div><h2 class="section-title">Featured <em>Events</em></h2><p class="section-sub">Happening soon — don't miss out</p></div>
         <a href="{{ url_for('events') }}" class="btn btn-ghost">See all →</a>
       </div>
-      <div class="events-grid" id="eventsGrid">
+    <div class="events-grid" id="eventsGrid">
           {% for event in events[:3] %}
           {% set registered = event.registrations.count() %}
           {% set spots_left = event.max_participants - registered if event.max_participants else 9999 %}
@@ -188,5 +199,6 @@
   <footer><p>© 2026 EventHub · Built with ❤️</p></footer>
 
   <script src="{{ url_for('static', filename='index.js') }}"></script>
+  <script src="{{ url_for('static', filename='shared.js') }}"></script>
 </body>
 </html>
