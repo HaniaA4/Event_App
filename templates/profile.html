@@ -21,88 +21,84 @@
     <h3 class="event-title">Profile Information</h3>
     <p class="event-category"><strong>Name:</strong> {{ current_user.full_name }}</p>
     <p class="event-category"><strong>Email:</strong> {{ current_user.email }}</p>
-  </section>
+  </section>    
 
-    <a href="{{ url_for('create_event') }}" class="btn btn-primary add-event-btn">+ Add Event</a>
+  <a href="{{ url_for('create_event') }}" class="btn btn-primary add-event-btn">+ Add Event</a>
 
 
-<div class="events-grid" id="eventsGrid">
-<section class="glass profile-card reveal" id="organizedEvents">
+  <div class="events-grid" id="eventsGrid">
+    <section class="glass profile-card reveal" id="organizedEvents">
 
-  <h3 class="event-title">Events I organize</h3>
+      <h3 class="event-title">Events I organize</h3>
 
-  {% if organized_events %}
+        {% if organized_events %}
 
-    <div class="profile-list">
+      <div class="profile-list">
 
-      {% for event in organized_events %}
+        {% for event in organized_events %}
 
-      <div class="profile-event-item">
+        <div class="profile-event-item">
 
-        <div class="event-category">
-          {{ event.category.name }}
-        </div>
-
-        <h3 class="event-title">
-          {{ event.title }}
-        </h3>
-
-        <div class="event-meta">
-          <div class="event-meta-row">
-            📅 {{ event.date }}
+          <div class="event-category">
+            {{ event.category.name }}
           </div>
 
-          <div class="event-meta-row">
-            📍 {{ event.location }}
+          <h3 class="event-title">
+            {{ event.title }}
+          </h3>
+
+          <div class="event-meta">
+            <div class="event-meta-row">
+              📅 {{ event.date.strftime('%d %b %Y, %H:%M') }}
+            </div>
+
+            <div class="event-meta-row">
+              📍 {{ event.location }}
+            </div>
+
+            <div class="event-meta-row">
+              👤 Organizer: {{ event.organizer.full_name }}
+            </div>
           </div>
 
-          <div class="event-meta-row">
-            👤 Organizer: {{ event.organizer.full_name }}
+          <div class="event-actions">
+
+            <a href="{{ url_for('event_detail', event_id=event.id) }}"
+                class="btn btn-ghost">
+              View
+            </a>
+
+            <a href="{{ url_for('edit_event', event_id=event.id) }}"
+                class="btn btn-outline">
+              ✏️ Edit
+            </a>
+
+            <form method="POST" action="{{ url_for('delete_event', event_id=event.id) }}" onsubmit="return confirm('Delete this event? This also removes its registrations and comments.');">
+              <button type="submit" class="btn btn-danger">
+                🗑️ Delete
+              </button>
+            </form>
+
           </div>
-        </div>
-
-        <div class="event-actions">
-
-          <a href="{{ url_for('event_detail', event_id=event.id) }}"
-             class="btn btn-ghost">
-            View
-          </a>
-
-          <a href="{{ url_for('edit_event', event_id=event.id) }}"
-             class="btn btn-outline">
-            ✏️ Edit
-          </a>
-
-          <form method="POST"
-                action="{{ url_for('delete_event', event_id=event.id) }}"
-                onsubmit="return confirm('Delete this event? This also removes its registrations and comments.');">
-
-            <button type="submit" class="btn btn-danger">
-              🗑️ Delete
-            </button>
-
-          </form>
 
         </div>
+
+        {% endfor %}
 
       </div>
 
-      {% endfor %}
+    {% else %}
 
-    </div>
+      <p>You haven't organized any events yet.</p>
 
-  {% else %}
+    {% endif %}
 
-    <p>You haven't organized any events yet.</p>
+    </section>
 
-  {% endif %}
+    <section class="glass profile-card reveal" id="myRegistrations">
+    <h3 class="event-title">My registrations</h3>
 
-</section>
-
-<section class="glass profile-card reveal" id="myRegistrations">
-  <h3 class="event-title">My registrations</h3>
-
-  {% if my_registrations %}
+    {% if my_registrations %}
     <div class="profile-list">
       {% for registration in my_registrations %}
         <div class="profile-event-item">
@@ -116,13 +112,13 @@
           </h3>
 
           <div class="event-meta">
-            <div class="event-meta-row">📅 {{ registration.event.date }}</div>
+            <div class="event-meta-row">📅 {{ registration.event.date.strftime('%d %b %Y, %H:%M') }}</div>
             <div class="event-meta-row">📍 {{ registration.event.location }}</div>
           </div>
 
           <div class="event-actions">
             <a href="{{ url_for('event_detail', event_id=registration.event.id) }}"
-               class="btn btn-ghost">
+                class="btn btn-ghost">
               View
             </a>
 
@@ -138,16 +134,16 @@
         </div>
       {% endfor %}
     </div>
-  {% else %}
+    {% else %}
     <p>You are not registered for any events yet.</p>
-  {% endif %}
-</section>
+    {% endif %}
+    </section>
 
-<section class="glass profile-card reveal" id="myFavorites">
+    <section class="glass profile-card reveal" id="myFavorites">
 
-  <h3 class="event-title">My favorite events</h3>
+    <h3 class="event-title">My favorite events</h3>
 
-  {% if my_favorites %}
+    {% if my_favorites %}
 
     <div class="profile-list">
 
@@ -165,7 +161,7 @@
 
         <div class="event-meta">
           <div class="event-meta-row">
-            📅 {{ event.date }}
+            📅 {{ event.date.strftime('%d %b %Y, %H:%M') }}
           </div>
 
           <div class="event-meta-row">
@@ -180,7 +176,7 @@
         <div class="event-actions">
 
           <a href="{{ url_for('event_detail', event_id=event.id) }}"
-             class="btn btn-ghost">
+              class="btn btn-ghost">
             View
           </a>
 
@@ -202,15 +198,14 @@
 
     </div>
 
-  {% else %}
+    {% else %}
 
     <p>You have no favorite events yet.</p>
 
-  {% endif %}
+    {% endif %}
 
-</section>
+    </section>
 
-</div>  
-</div>
+  </div>  
 </div>
 {% endblock %}

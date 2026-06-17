@@ -81,6 +81,7 @@ def render_admin_dashboard(editing_event=None):
             )
         ),
         users=list(User.select().order_by(User.full_name)),
+        comments=list(Comment.select().order_by(Comment.id.desc())),
         editing_event=editing_event,
     )
 
@@ -589,7 +590,28 @@ def add_comment(event_id):
 
     Comment.create(text=text, event=event, author=current_user)
     flash("Comment added.", "success")
-    return redirect(url_for("event_detail", event_id=event.id)) 
+    return redirect(url_for("event_detail", event_id=event.id))
+
+@app.route("/comments/<int:comment_id>/delete", methods=["POST"])
+@login_required
+def delete_comment(comment_id):
+    current_user = get_current_user()
+
+    comment = Comment.get_or_none(Comment.id == comment_id)
+    if comment is None:
+        abort(404)
+
+    if comment.author != current_user and not current_user.is_admin:
+        abort(403)
+
+    event_id = comment.event.id
+    comment.delete_instance()
+
+    flash("Comment deleted.", "success")
+    if current_user.is_admin:
+        return redirect(url_for("admin"))   
+    
+    return redirect(url_for("event_detail", event_id=event_id))
 
 
 @app.route("/make-admin/<email>") 

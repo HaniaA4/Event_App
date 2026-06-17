@@ -27,7 +27,7 @@
     </ul>
   <div class="nav-cta">
     {% if current_user %}
-      <a href="{{ url_for('profile') }}" class="btn btn-ghost">My Area</a>
+      <a href="{{ url_for('profile') }}" class="btn btn-ghost">Hi!👋 {{ current_user.full_name }}</a>
       <a href="{{ url_for('logout') }}" class="btn btn-primary">Logout</a>
     {% else %}
       <a href="{{ url_for('login') }}" class="btn btn-ghost">Log in</a>
@@ -79,7 +79,7 @@
           <div class="section-block">
             <h3>Event Details</h3>
             <div class="info-grid" id="infoGrid">
-              <p><strong>Date:</strong> {{ event.date }}</p>
+              <p><strong>Date:</strong> {{ event.date.strftime('%d %b %Y, %H:%M') }}</p>
               <p><strong>Location:</strong> {{ event.location }}</p>
               <p><strong>Status:</strong> {{ event.status }}</p>
               <p><strong>Category:</strong> {{ event.category.name }}</p>
@@ -91,12 +91,46 @@
             <div class="tags-row" id="tagsRow"></div>
           </div>
 
-          <div class="section-block">
-            <h3>Who's going</h3>
-            <div class="participants-list" id="participantsList">
-              <p>{{ registrations_count }} people registered</p>
+        <div class="section-block">
+          <h3>Comments</h3>
+
+          {% if comments %}
+            <div class="comments-list">
+              {% for comment in comments %}
+                <div class="glass comment-card">
+                  <p class="comment-text">{{ comment.text }}</p>
+                  <p class="comment-author">
+                    — {{ comment.author.full_name }}
+                  </p>
+                  {% if current_user and (comment.author.id == current_user.id or current_user.is_admin) %}
+                  <form method="POST"
+                        action="{{ url_for('delete_comment', comment_id=comment.id) }}"
+                        onsubmit="return confirm('Delete this comment?');">
+                    <button type="submit" class="btn btn-danger">
+                      Delete Comment
+                    </button>
+                  </form>
+                {% endif %}
+                </div>
+              {% endfor %}
             </div>
-          </div>
+          {% else %}
+            <p>No comments yet. Be the first to comment.</p>
+          {% endif %}
+
+          {% if current_user %}
+            <form method="POST" action="{{ url_for('add_comment', event_id=event.id) }}" class="comment-form">
+              <textarea name="text" placeholder="Write a comment..." required></textarea>
+              <button type="submit" class="btn btn-primary">
+                Post Comment
+              </button>
+            </form>
+          {% else %}
+            <p>
+              <a href="{{ url_for('login') }}">Log in</a> to comment.
+            </p>
+          {% endif %}
+        </div>
 
         </div>
 
@@ -173,7 +207,7 @@
 
 <script>
   const eventData = {
-    date: "{{ event.date }}",
+    date: "{{ event.date.strftime('%d %b %Y, %H:%M') }}",
     location: "{{ event.location }}",
     status: "{{ event.status }}",
     category: "{{ event.category.name }}",

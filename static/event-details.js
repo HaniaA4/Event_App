@@ -86,6 +86,16 @@ function showNotification(msg) {
 }
 
 /* ─────────────────────────────────────────
+   COMMENT TEXTAREA AUTO-RESIZE 
+───────────────────────────────────────── */
+    document.querySelectorAll("textarea").forEach(textarea => {
+    textarea.addEventListener("input", () => {
+      textarea.style.height = "auto";
+      textarea.style.height = textarea.scrollHeight + "px";
+    });
+  });
+
+/* ─────────────────────────────────────────
    SHARE
 ───────────────────────────────────────── */
 function share(type) {
