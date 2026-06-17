@@ -44,7 +44,7 @@ class Registration(BaseModel):
     event = ForeignKeyField(Event, backref="registrations")
 
     # A user can registrate to an event only once
-    # Creates a unique index on the combination of user and event
+
 
 
 class Favorite(BaseModel):
