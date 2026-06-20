@@ -13,15 +13,18 @@
 
 {% block content %}
 <div class="admin-page">
+    <!-- Admininstrator page, with options to manage events, categories, and users -->
     <section class="admin-hero glass">
         <div class="admin-hero-copy">
             <p class="admin-eyebrow">Administration</p>
             <h1>Manage events, categories, and registrations from one place.</h1>
             <p class="admin-summary">Logged in as <strong>{{ current_user.full_name }}</strong> ({{ current_user.email }}).</p>
+            <!-- Shows username and email -->
         </div>
         <div class="admin-hero-stats">
             <div class="stat-card">
                 <span class="stat-value">{{ events|length }}</span>
+                <!-- Shows total number of events, categories, and users -->
                 <span class="stat-label">Events</span>
             </div>
             <div class="stat-card">
@@ -72,6 +75,7 @@
                         <span>Status</span>
                         <select name="status">
                             <option value="open" {% if not editing_event or editing_event.status == 'open' %}selected{% endif %}>Open</option>
+                            <!-- Admin can set event as open or closed -->
                             <option value="closed" {% if editing_event and editing_event.status == 'closed' %}selected{% endif %}>Closed</option>
                         </select>
                     </label>
@@ -170,6 +174,7 @@
                             </div>
                             <div class="event-actions">
                                 <a class="btn btn-ghost" href="{{ url_for('admin_edit_event', event_id=event.id) }}">Edit</a>
+                                <!-- Admin can delete the event. It also deletes its registrations and comments -->
                                 <form method="post" action="{{ url_for('admin_delete_event', event_id=event.id) }}" onsubmit="return confirm('Delete this event? This also removes its registrations and comments.');">
                                     <button class="btn btn-danger" type="submit">Delete</button>
                                 </form>
@@ -177,6 +182,7 @@
                         </div>
 
                         <div class="event-card-meta">
+                            <!-- Show organizer, status, and registration count -->
                             <span><strong>Organizer:</strong> {{ event.organizer.full_name }}</span>
                             <span><strong>Status:</strong> {{ event.status }}</span>
                             <span><strong>Registrations:</strong> {{ event.registrations|length }}</span>
@@ -185,12 +191,14 @@
                         <!-- lets admins see + remove individual attendees per event, not just the count -->
                         {% if event.registrations|length > 0 %}
                             <div class="attendee-list">
+                                <!-- List all registered users. Has option to remove them -->
                                 {% for registration in event.registrations %}
                                     <div class="attendee-card">
                                         <div class="attendee-card-top">
                                             <div class="attendee-card-copy">
                                                 <span class="attendee-name">{{ registration.user.full_name }}</span>
                                                 <small>{{ registration.user.email }}</small>
+                                                
                                             </div>
                                             <form method="post" action="{{ url_for('admin_delete_registration', event_id=event.id, registration_id=registration.id) }}" onsubmit="return confirm('Remove this participant from the event?');">
                                                 <button class="btn btn-danger" type="submit">Remove</button>
@@ -245,6 +253,7 @@
         </div>
     {% else %}
         <p class="empty-state">No comments yet.</p>
+        <!-- If there are no comments, shows the message -->
     {% endif %}
 </section>
 </div>
