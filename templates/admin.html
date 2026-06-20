@@ -49,10 +49,7 @@
                     <a class="panel-link" href="{{ url_for('admin') }}">Cancel editing</a>
                 {% endif %}
             </div>
-
-            <!-- one form does double duty for create AND edit - editing_event is only set when
-                 we got here through the "Edit" link on an existing event, so we swap the
-                 submit url and pre-fill the values based on whether it's set -->
+            
             <form class="admin-form" method="post" action="{% if editing_event %}{{ url_for('admin_edit_event', event_id=editing_event.id) }}{% else %}{{ url_for('admin_create_event') }}{% endif %}">
                 <div class="form-grid">
                     <label>
