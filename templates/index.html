@@ -1,3 +1,6 @@
+<!-- landing page, this one is its own full html doc instead of extending base.html
+     since the navbar/hero layout here is pretty different from the rest of the site -->
+<!-- icons used here are plain unicode characters typed directly into the markup, not an icon library/CDN -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +15,7 @@
 </head>
 <body>
 
+<!-- animated background sits behind everything, same as base.html -->
 <iframe src="{{ url_for('static', filename='background.html') }}" class="bg-frame" title="background"></iframe>
 
   <nav class="navbar">
@@ -61,6 +65,7 @@
         <a href="{{ url_for('events') }}" class="btn btn-primary btn-lg">Explore Events</a>
         <a href="{{ url_for('profile') if current_user else url_for('login') }}" class="btn btn-outline btn-lg">Host a Meetup</a>
       </div>
+      <!-- these numbers come straight from the db, not hardcoded, so they stay accurate -->
       <div class="hero-stats">
         <div class="stat"><div class="stat-num">{{ events|length }}</div><div class="stat-label">Events</div></div>
         <div class="stat"><div class="stat-num">{{ profiles|length }}</div><div class="stat-label">Members</div></div>
@@ -76,6 +81,8 @@
   {% for category in categories %}
     <a href="{{ url_for('events') }}" class="glass category-card">
 
+      <!-- just matching the category name to an emoji, falls back to a pin if we add
+           a new category and forget to give it an icon -->
       <span class="cat-icon">
         {% if category.name == "Study Sessions" %}
           📚
@@ -112,8 +119,11 @@
         <a href="{{ url_for('events') }}" class="btn btn-ghost">See all →</a>
       </div>
     <div class="events-grid" id="eventsGrid">
+          {# only showing the first 3 events here as a preview, the rest are on the events page #}
           {% for event in events[:3] %}
           {% set registered = event.registrations.count() %}
+          {# if there's no max_participants set, treat it as "unlimited" with a big fake number
+             so the spots_left check below never thinks it's full #}
           {% set spots_left = event.max_participants - registered if event.max_participants else 9999 %}
 
     <a href="{{ url_for('event_detail', event_id=event.id) }}"

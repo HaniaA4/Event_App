@@ -1,3 +1,5 @@
+/* styles for the single event page */
+
 /* ── Back link ── */
 .back-link {
   display: inline-flex; align-items: center; gap: 0.4rem;
@@ -89,6 +91,7 @@
 }
 
 /* ── Sidebar ── */
+/* sticky so the register button stays visible while scrolling through the description/comments */
 .sidebar-card { padding: 1.75rem; position: sticky; top: 84px; }
 
 .price-tag { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 2rem; color: #fff; margin-bottom: 0.25rem; }
@@ -206,7 +209,7 @@
   background: rgba(245,104,155,0.05);
 }
 
-/* ── Responsive ── */
+/* ── Responsiveness ── */
 @media (max-width: 860px) {
   .detail-layout { grid-template-columns: 1fr; }
   .sidebar-card { position: static; }

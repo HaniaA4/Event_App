@@ -1,3 +1,5 @@
+/* styles for the "My Account" page - the .profile-card sections (organized/registered/favorites)
+   and the list of events inside each one */
 .btn-danger { background: #f5689b; color: #fff; box-shadow: 0 0 20px rgba(255,107,157,0.3); }
 .btn-danger:hover { background: #ff4d8d; transform: translateY(-1px); }
 

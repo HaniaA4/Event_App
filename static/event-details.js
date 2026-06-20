@@ -2,9 +2,13 @@
    EVENT DETAILS PAGE
    Data comes from Flask/Jinja in event_details.html
 ───────────────────────────────────────── */
+// the icons (📅 📍 📌 🏷️ 👤 👥 🎟️ etc.) are plain unicode characters typed directly into
+// the strings below -- no icon library/CDN involved
 
 /* ─────────────────────────────────────────
    INFO CARDS
+   note: the HTML already has a basic version of this info rendered by jinja,
+   this function replaces it with the nicer icon-card version once the page loads
 ───────────────────────────────────────── */
 function buildInfoCards() {
   const grid = document.getElementById('infoGrid');
@@ -38,6 +42,7 @@ function buildInfoCards() {
 
 /* ─────────────────────────────────────────
    PROGRESS BAR
+   fills based on registered / max_participants, with a warning once spots get low
 ───────────────────────────────────────── */
 function updateProgress() {
   if (typeof eventData === 'undefined') return;
@@ -71,7 +76,7 @@ function updateProgress() {
 }
 
 /* ─────────────────────────────────────────
-   NOTIFICATION TOAST
+   NOTIFICATION 
 ───────────────────────────────────────── */
 function showNotification(msg) {
   const n = document.getElementById('notification');
@@ -97,6 +102,7 @@ function showNotification(msg) {
 
 /* ─────────────────────────────────────────
    SHARE
+   just uses the current page URL, no backend involved
 ───────────────────────────────────────── */
 function share(type) {
   const url = window.location.href;
@@ -104,7 +110,7 @@ function share(type) {
   if (type === 'copy') {
     navigator.clipboard.writeText(url)
       .then(() => showNotification('🔗 Link copied to clipboard!'))
-      .catch(() => showNotification('Copy the URL from your browser bar.'));
+      .catch(() => showNotification('Copy the URL from your browser bar.')); // clipboard API can fail on http/old browsers
   }
 
   if (type === 'whatsapp') {
@@ -114,7 +120,7 @@ function share(type) {
 }
 
 /* ─────────────────────────────────────────
-   HAMBURGER
+   HAMBURGER - the menu for responsiveness
 ───────────────────────────────────────── */
 const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('navLinks');

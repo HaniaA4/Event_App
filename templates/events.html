@@ -1,3 +1,5 @@
+<!-- icons used throughout this page are plain
+  unicode characters typed directly into the markup, not an icon library/CDN -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,6 +93,8 @@
     </div>
 
     <!-- ── Events Grid ── -->
+    <!-- every event from the db gets rendered here, the data-* attributes are what
+         events.js reads to filter/sort/search without needing another request to the server -->
 <div class="events-grid" id="eventsGrid">
   {% for event in events %}
     {% set registered = event.registrations.count() %}
@@ -106,6 +110,7 @@
 
       <div class="event-body">
         <div class="event-category">{{ event.category.name }}</div>
+        {# favorite_event_ids is passed from the view so we don't have to query per-card #}
         {% if current_user and event.id in favorite_event_ids %}
           <div class="event-meta-row">★ In your favorites</div>
         {% endif %}

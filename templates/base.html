@@ -1,8 +1,11 @@
+<!-- base.html is the master layout, every other page extends this one so we don't have to
+     rewrite the navbar/head/scripts on every page -->
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <title>{% block title %}Event App{% endblock %}</title>
+    <!-- loading all our stylesheets here so every page that extends base.html gets them -->
     <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='events.css') }}">
@@ -12,12 +15,14 @@
 </head>
 <body>
 
+    <!-- iframe just renders our animated background page behind everything else -->
     <iframe src="{{ url_for('static', filename='background.html') }}" class="bg-frame" title="background"></iframe>
 
     <header>
     <nav class="navbar">
         <a href="{{ url_for('home') }}" class="nav-logo">Event<em>Hub</em></a>
         <ul class="nav-links" id="navLinks">
+        {# current_user comes from Flask-Login, so the navbar changes depending on if you're logged in #}
         {% if current_user %}
             <li><a href="{{ url_for('events') }}">Events</a></li>
             <li>Hi!👋 {{ current_user.full_name }}</li>
@@ -29,11 +34,12 @@
         {% else %}
             <li><a href="{{ url_for('login') }}">Login</a></li>
             <li><a href="{{ url_for('login') }}#register">Sign up</a></li>
-        {% endif %}  
-        </ul>   
+        {% endif %}
+        </ul>
     </nav>
 </header>
 
+        {# flask's flash() messages, styled to look like inline form feedback (used on login/register) #}
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             <div class="flash-container-auth">
@@ -45,6 +51,7 @@
             </div>
           {% endif %}
         {% endwith %}
+      {# same flashed messages again but styled as banners, used on the rest of the pages #}
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           <div class="flash-container">
@@ -59,9 +66,10 @@
       <main>
     {% block content %}{% endblock %}
 </main>
+<!-- loading all the page scripts here too, same idea as the CSS above -->
 <script src="{{ url_for('static', filename='events.js') }}"></script>
 <script src="{{ url_for('static', filename='login.js') }}"></script>
-<script src="{{ url_for('static', filename='shared.js') }}"></script> 
+<script src="{{ url_for('static', filename='shared.js') }}"></script>
 {% block extra_js %}{% endblock %}
 </body>
 </html>

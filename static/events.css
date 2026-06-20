@@ -1,3 +1,6 @@
+/* styles for the all-events page, the filter buttons/search box/sort dropdown here
+   are styled here but the actual filtering logic lives in events.js */
+
 /* ── Page Header ── */
 .page-header {
   padding: 3.5rem 1.5rem 2rem;

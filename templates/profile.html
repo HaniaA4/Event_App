@@ -9,6 +9,8 @@
 {% block extra_js %}    
 {% endblock %}
 
+{# the profile page has 3 sections below: events you organize, events you registered for,
+   and your favorited events. each one loops over a list passed in from the view function #}
 {% block content %}
 <div class="profile-page">
 
@@ -29,6 +31,7 @@
   <div class="events-grid" id="eventsGrid">
     <section class="glass profile-card reveal" id="organizedEvents">
 
+      <!-- events this user created - they get View/Edit/Delete since it's their own event -->
       <h3 class="event-title">Events I organize</h3>
 
         {% if organized_events %}
@@ -95,6 +98,7 @@
 
     </section>
 
+    <!-- events this user signed up to attend - just View/Cancel here, since they didn't create these -->
     <section class="glass profile-card reveal" id="myRegistrations">
     <h3 class="event-title">My registrations</h3>
 
@@ -139,6 +143,7 @@
     {% endif %}
     </section>
 
+    <!-- events the user starred from the events/details page, separate list from registrations -->
     <section class="glass profile-card reveal" id="myFavorites">
 
     <h3 class="event-title">My favorite events</h3>

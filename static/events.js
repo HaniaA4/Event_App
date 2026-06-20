@@ -1,3 +1,6 @@
+/* all the filtering/sorting on the events page happens on the client-side - the events are already
+in the DOM (rendered by flask), we just show/hide and reorder the cards with JS instead
+of re-fetching from the server every time you type in the search bar */
 let currentCategory = 'all';
 let currentSearch = '';
 let currentSort = 'date';
@@ -6,6 +9,7 @@ function getCards() {
   return Array.from(document.querySelectorAll('.event-card'));
 }
 
+// re-runs every time the search box, category filter, or sort dropdown changes
 function filterAndSortCards() {
   const cards = getCards();
   const grid = document.getElementById('eventsGrid');
@@ -16,6 +20,8 @@ function filterAndSortCards() {
     return;
   }
 
+  // keep only the cards that match both the selected category and the search text
+  // (the data attributes on each card come from events.html)
   let visibleCards = cards.filter(card => {
     const category = card.dataset.category || '';
     const title = card.dataset.title || '';
@@ -36,6 +42,7 @@ function filterAndSortCards() {
   });
 
   if (currentSort === 'spots') {
+    // fewest spots left shows up first
     visibleCards.sort((a, b) => {
       const spotsA = Number(a.dataset.spotsLeft || 9999);
       const spotsB = Number(b.dataset.spotsLeft || 9999);
@@ -44,6 +51,7 @@ function filterAndSortCards() {
   }
 
   if (currentSort === 'popularity') {
+    // most registrations shows up first
     visibleCards.sort((a, b) => {
       const regA = Number(a.dataset.registrations || 0);
       const regB = Number(b.dataset.registrations || 0);
@@ -51,6 +59,8 @@ function filterAndSortCards() {
     });
   }
 
+  /* hide everything first, then only show + re-append the cards that survived the filter
+   (re-appending also puts them in the right sorted order in the grid) */
   cards.forEach(card => {
     card.style.display = 'none';
   });
@@ -70,6 +80,7 @@ function filterAndSortCards() {
     }
   }
 
+  // newly-shown cards need to be re-checked for the scroll reveal animation
   observeReveal();
 }
 
@@ -97,6 +108,7 @@ if (searchInput) {
   });
 }
 
+// category filter buttons (All, Study, Workshops etc) only one can be active at a time
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => {
@@ -118,6 +130,7 @@ if (sortSelect) {
   });
 }
 
+// mobile hamburger menu toggle
 const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('navLinks');
 
@@ -127,4 +140,5 @@ if (hamburger && navLinks) {
   });
 }
 
+// run once on page load so the results count is correct from the start
 filterAndSortCards();

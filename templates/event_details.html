@@ -1,3 +1,4 @@
+<!-- icons included are plain unicode characters typed directly into the markup, not an icon library/CDN -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,7 +89,7 @@
 
           <div class="section-block">
             <h3>Tags</h3>
-            <div class="tags-row" id="tagsRow"></div>
+            <div class="tags-row" id="tagsRow"></div> <!-- not wired up to anything yet, reserved for a future tags feature -->
           </div>
 
         <div class="section-block">
@@ -102,6 +103,7 @@
                   <p class="comment-author">
                     — {{ comment.author.full_name }}
                   </p>
+                  {# only let the comment's own author or an admin delete it #}
                   {% if current_user and (comment.author.id == current_user.id or current_user.is_admin) %}
                   <form method="POST"
                         action="{{ url_for('delete_comment', comment_id=comment.id) }}"
@@ -139,6 +141,7 @@
           <div class="glass sidebar-card">
             <div class="price-tag">Free <span>/ entry</span></div>
 
+            <!-- starts at "Loading..." / 0%, event-details.js fills this in on page load -->
             <div class="progress-wrap">
               <div class="progress-label">
                 <span id="progressText">Loading…</span>
@@ -149,6 +152,7 @@
               </div>
             </div>
 
+            <!-- swap between Register / Cancel Registration depending on whether the user already signed up -->
             <div class="register-area">
               {% if current_user %}
                 {% if is_registered %}
@@ -202,9 +206,12 @@
     <p>© 2025 EventHub · Built with ❤️</p>
   </footer>
 
+  <!-- hidden by default, event-details.js shows this with showNotification() (e.g. after copying the share link) -->
   <div id="notification">✅ Registered successfully!</div>
 
 
+<!-- dumping the event data into a plain JS object here so event-details.js can use it
+     without making another request, since it's already available from jinja -->
 <script>
   const eventData = {
     date: "{{ event.date.strftime('%d %b %Y, %H:%M') }}",

@@ -1,3 +1,8 @@
+/* shared.css holds stuff that's used across every page - colors, navbar, buttons, flash messages, etc.
+   page-specific styles live in their own css files (login.css, events.css  etc) */
+
+/* keeping all our colors as variables here so if we want to change the theme later
+   we only have to edit it in one place instead of searching through every file */
 :root {
   --accent:       #5c7cfa;
   --accent-glow:  rgba(92, 124, 250, 0.35);
@@ -9,6 +14,7 @@
   --card-bg:      rgba(13, 20, 50, 0.55);
 }
 
+/* css reset so every browser starts from the same blank slate */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
@@ -20,6 +26,7 @@ body {
   overflow-x: hidden;
 }
 
+/* full-screen behind everything (z-index -1) so the animated background shows through */
 .bg-frame {
   position: fixed;
   top: 0; left: 0;
@@ -142,9 +149,11 @@ body {
   border-color: rgba(234, 179, 8, 0.6);
 }
 
-.flash.hide { 
+/* shared.js adds this class to fade flashes out before removing them from the DOM */
+.flash.hide {
   opacity: 0; }
 
+/* navbar is fixed/floating so every page needs this top padding to not get hidden behind it */
 .page { padding-top: 64px; }
 
 /* ── Footer ── */
@@ -162,10 +171,12 @@ footer {
 .hamburger span { display: block; width: 24px; height: 2px; background: var(--text-main); border-radius: 2px; }
 
 /* ── Scroll reveal ── */
+/* starts hidden + shifted down, JS adds .visible once it scrolls into view (fade-in effect) */
 .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
 /* ── Responsive navbar ── */
+/* on small screens we hide the regular nav links and show the hamburger button instead */
 @media (max-width: 768px) {
   .nav-links { display: none; }
   .hamburger { display: flex; }

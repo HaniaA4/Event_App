@@ -1,3 +1,5 @@
+{# form for logged-in users to host a new event, extends base.html so we get the navbar/flash messages for free #}
+{# the 📅 next to the heading is a plain unicode character typed directly in, not an icon library/CDN #}
 {% extends "base.html" %}
 
 {% block title %}Create Event{% endblock %}
@@ -29,10 +31,11 @@
   <div class="input-wrap">
   <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M336-240h288v-72H336v72Zm0-144h288v-72H336v72ZM263.72-96Q234-96 213-117.15T192-168v-624q0-29.7 21.15-50.85Q234.3-864 264-864h312l192 192v504q0 29.7-21.16 50.85Q725.68-96 695.96-96H263.72ZM528-624v-168H264v624h432v-456H528ZM264-792v189-189 624-624Z"/></svg>
   <textarea name="description"></textarea>
+    <!-- auto-grows the textarea as you type instead of showing a scrollbar -->
     <script>
     document.querySelectorAll("textarea").forEach(textarea => {
     textarea.addEventListener("input", () => {
-      textarea.style.height = "auto";
+      textarea.style.height = "auto"; // reset first so it can shrink back down too
       textarea.style.height = textarea.scrollHeight + "px";
     });
   });
@@ -43,7 +46,7 @@
   <div class="form-group">
   <label>Date and Time</label>
   <div class="input-wrap">
-  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M216-600h528v-96H216v96Zm0 0v-96 96Zm0 504q-29.7 0-50.85-21.15Q144-138.3 144-168v-528q0-29 21.5-50.5T216-768h72v-96h72v96h240v-96h72v96h72q29 0 50.5 21.5T816-696v210q-17-7-35.03-11-18.04-4-36.97-6v-25H216v360h250q5 20 13.5 37.5T499-96H216Zm368-8.23q-56-56.22-56-136Q528-320 584.23-376q56.22-56 136-56Q800-432 856-375.77q56 56.22 56 136Q912-160 855.77-104q-56.22 56-136 56Q640-48 584-104.23ZM775-151l34-34-65-65v-8-sixteen v9 sixty h seventy-two q twenty-nine zero fifty point-five T eight-one-six minus six ninety-six v two-one-zero q minus seventeen minus seven minus thirty-five point zero-three minus eleven minus eighteen point zero-four minus four minus thirty-six point ninety-seven minus six v minus twenty-five H two-one-six v three-six-zero h two-five-zero q five twenty thirteen point five thirty-seven point five T four ninety-nine minus ninety-six H two-one-six Z m three-six-eight minus eight point two-three q minus fifty-six minus fifty-six point two-two minus fifty-six minus one hundred thirty-six Q five-two-eight minus three hundred twenty zero five-eight-four point two-three minus three hundred seventy-six q fifty-six point two-two minus fifty-six one hundred thirty-six minus fifty-six Q eight-zero-zero minus four hundred thirty-two eight-five-six minus three hundred seventy-five point seven-seven q fifty-six fifty-six point two-two fifty-six one hundred thirty-six Q nine-one-two minus one hundred sixty eight-five-five point seven-seven minus one-zero-four qminus fifty-six point two-two fifty-sixminus one-three-six Q six-four-zerominus four-eight five-eight-fourminus one-zero-four point two-three Z M seven-seven-fiveminus one hundred fifty-one l thirty-fourminus thirty-four m sixty-fiveminus sixty-five vminus eighty-six hminus forty-eight vone-zero-six l seventy-nine seventy-nine Z"/></svg>
+  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#ffffff"><path d="M216-600h528v-96H216v96Zm0 504q-29.7 0-50.85-21.15Q144-138.3 144-168v-528q0-29 21.5-50.5T216-768h72v-96h72v96h240v-96h72v96h72q29 0 50.5 21.5T816-696v528q0 29.7-21.15 50.85Q773.7-96 744-96H216Zm0-72h528v-360H216v360Z"/></svg>
   <input type="datetime-local" name="date" required>
   </div>
   </div>
@@ -57,6 +60,8 @@
   </div>
 
 
+  <!-- optional - leaving this blank means the event has no cap on participants
+       (matches how max_participants is handled as "unlimited" elsewhere, e.g. events.html) -->
   <div class="form-group">
     <label>Max Participants</label>
     <div class="input-wrap">
@@ -88,4 +93,11 @@
 {% endblock %}
 
 {% block extra_css %}
+<style>
+  /* the browser's built-in calendar icon on the date field defaults to dark,
+     which is invisible on our dark background, so we flip it to white */
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+</style>
 {% endblock %}

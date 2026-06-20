@@ -1,3 +1,5 @@
+{# admin dashboard - only reachable if current_user.is_admin (checked in the flask route).
+   4 panels: create/edit events, manage categories, view registrations per event, moderate comments #}
 {% extends "base.html" %}
 
 {% block title %}Admin Backoffice{% endblock %}
@@ -45,6 +47,9 @@
                 {% endif %}
             </div>
 
+            <!-- one form does double duty for create AND edit - editing_event is only set when
+                 we got here through the "Edit" link on an existing event, so we swap the
+                 submit url and pre-fill the values based on whether it's set -->
             <form class="admin-form" method="post" action="{% if editing_event %}{{ url_for('admin_edit_event', event_id=editing_event.id) }}{% else %}{{ url_for('admin_create_event') }}{% endif %}">
                 <div class="form-grid">
                     <label>
@@ -132,6 +137,7 @@
                             </form>
                             <div class="category-meta">
                                 <span>{{ category.events.count() }} event{{ '' if category.events.count() == 1 else 's' }}</span>
+                                <!-- disabled while events still use this category, prevents leaving events with no category -->
                                 <form method="post" action="{{ url_for('admin_delete_category', category_id=category.id) }}">
                                     <button class="btn btn-danger" type="submit" {% if category.events.count() > 0 %}disabled title="Move or delete the linked events first"{% endif %}>Delete</button>
                                 </form>
@@ -176,6 +182,7 @@
                             <span><strong>Registrations:</strong> {{ event.registrations|length }}</span>
                         </div>
 
+                        <!-- lets admins see + remove individual attendees per event, not just the count -->
                         {% if event.registrations|length > 0 %}
                             <div class="attendee-list">
                                 {% for registration in event.registrations %}

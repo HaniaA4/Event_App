@@ -1,3 +1,4 @@
+/* styles for the login/register page */
 :root {
   --accent:        #5c7cfa;
   --accent-light:  #748ffc;
@@ -169,7 +170,7 @@ body {
 
 .toggle-pw:hover { color: var(--text-main); }
 
-/* ── Remember / Forgot ── */
+/* ── Remember me ── */
 .form-extras {
   display: flex; align-items: center;
   justify-content: space-between;
@@ -235,6 +236,7 @@ body {
 .form-msg.success { background: rgba(169,227,75,0.12); border: 1px solid rgba(169,227,75,0.25); color: var(--accent2); }
 
 /* ── Panel visibility ── */
+/* login.js toggles .active on these to switch between the login and register forms */
 .form-panel { display: none; }
 .form-panel.active { display: block; }
 

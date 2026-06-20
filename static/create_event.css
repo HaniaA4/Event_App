@@ -1,3 +1,5 @@
+/* this form just reuses the same input styling as login.css (.form-group),
+   this file only adds the bits login.css does not need: textarea and select */
 .form-group textarea, .form-group select {
   width: 100%;
   padding: 0.8rem 1rem 0.8rem 2.7rem;
